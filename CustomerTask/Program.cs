@@ -2,6 +2,7 @@ using BusinessAccess.Repository;
 using BusinessAccess.Repository.IRepository;
 using CustomerTask;
 using DataAccess.DataViewModel;
+using DataAccess.DTOs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +13,7 @@ builder.Services.AddDbContext<CustomerDbContext>();
 
 
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
-builder.Services.AddScoped<IPaginationRepository<CustomerListViewModel>, PaginationRepository<CustomerListViewModel>>();
+builder.Services.AddScoped<IPaginationRepository<CustomerListViewModel, CustomerSearchFilterDTO>, PaginationRepository<CustomerListViewModel , CustomerSearchFilterDTO>>();
 
 var app = builder.Build();
 

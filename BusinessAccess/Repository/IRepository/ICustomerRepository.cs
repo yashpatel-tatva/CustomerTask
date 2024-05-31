@@ -15,7 +15,7 @@ namespace BusinessAccess.Repository.IRepository
         void Editthis(Customer model);
         List<string> GetAllAcoountNumber();
         //int GetCustomerCount(string search);
-        PageFilterResponseDTO<CustomerListViewModel> GetCustomerList(PageFilterRequestDTO<CustomerListViewModel> pageFilterDTO);
+        PageFilterResponseDTO<CustomerListViewModel> GetCustomerList(PageFilterRequestDTO<CustomerSearchFilterDTO> pageFilterDTO);
         Customer GetInfoOfAC(string acno);
         Customer GetInfoOfId(int id);
 

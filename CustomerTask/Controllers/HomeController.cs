@@ -19,7 +19,7 @@ namespace CustomerTask.Controllers
             _customer = customerRepository;
         }
 
-        public IActionResult Index(PageFilterRequestDTO<CustomerListViewModel> pageFilterDTO)
+        public IActionResult Index(PageFilterRequestDTO<CustomerSearchFilterDTO> pageFilterDTO)
         {
             ViewBag.Search = pageFilterDTO.search;
             ViewBag.Currentpage = pageFilterDTO.currentpage;
@@ -44,14 +44,14 @@ namespace CustomerTask.Controllers
         //    return _customer.GetCustomerCount(search);
         //}
 
-        public PageFilterResponseDTO<CustomerListViewModel> GetCustomerList(PageFilterRequestDTO<CustomerListViewModel> pageFilterDTO)
+        public PageFilterResponseDTO<CustomerListViewModel> GetCustomerList(PageFilterRequestDTO<CustomerSearchFilterDTO> pageFilterDTO)
         {
             PageFilterResponseDTO<CustomerListViewModel> model = _customer.GetCustomerList(pageFilterDTO);
             return model;
         }
 
         [HttpPost]
-        public IActionResult GetCustomerListView([FromBody]PageFilterRequestDTO<CustomerListViewModel> pageFilterDTO)
+        public IActionResult GetCustomerListView([FromBody]PageFilterRequestDTO<CustomerSearchFilterDTO> pageFilterDTO)
         {
             PageFilterResponseDTO<CustomerListViewModel> model = GetCustomerList(pageFilterDTO);
             int pagncount = model.TotalPage;

@@ -25,21 +25,10 @@ function filterdata(search, currentpage, pagesize, orderbycolumnname, orderby, s
         contentType: 'application/json',
         type: 'POST',
         success: function (res) {
-
-            if (btncount == 0) {
-                $('#datainfo').text('No Record Found');
-
-            }
-            else if (btncount > currentpage) {
-                $('#datainfo').text('Showing ' + (((currentpage - 1) * pagesize) + 1) + ' - ' + (((currentpage) * pagesize)) + ' out of ' + count);
-            }
-            else {
-                $('#datainfo').text('Showing ' + (((currentpage - 1) * pagesize) + 1) + ' - ' + count + ' out of ' + count);
-            }
             $('.datadiv').html(res);
+            filtercount();
             var stateObj = { pagesize, currentpage, search };
             history.pushState(stateObj, "", "/Home/Index?pagesize=" + pagesize + "&currentpage=" + currentpage + "&search=" + search)
-            filtercount();
         }
     })
     $('.pagebtn_1').data('id', currentpage);
@@ -53,6 +42,7 @@ function filtercount() {
         if (currentpage != 1) {
             filterdata(search, 1, pagesize)
         }
+        $('#datainfo').text('No Record Found');
     }
     else if (btncount > currentpage) {
         $('#datainfo').text('Showing ' + (((currentpage - 1) * pagesize) + 1) + ' - ' + (((currentpage) * pagesize)) + ' out of ' + count);
@@ -209,6 +199,7 @@ $('.notselect').on('click', function () {
 
 
 $('.searchfilter').on('click', function () {
+    //search = ""; $('#search').val("")
     searchbyfilter();
 })
 
@@ -234,7 +225,7 @@ function searchbyfilter() {
         Relationship: relationship,
         currency: currency
     }
-    search = "";
+
     currentpage = 1;
     filterdata(search, currentpage, pagesize, orderbycolumnname, orderby, searchbycolumns);
 

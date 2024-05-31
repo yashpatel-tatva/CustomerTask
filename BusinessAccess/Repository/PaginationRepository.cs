@@ -3,9 +3,9 @@ using DataAccess.DTOs;
 
 namespace BusinessAccess.Repository
 {
-    public class PaginationRepository<T> : IPaginationRepository<T> where T : class
+    public class PaginationRepository<T, U> : IPaginationRepository<T, U> where T : class where U : class
     {
-        public PageFilterResponseDTO<T> GetPagedData(List<T> entity, PageFilterRequestDTO<T> pageFilterDTO)
+        public PageFilterResponseDTO<T> GetPagedData(List<T> entity, PageFilterRequestDTO<U> pageFilterDTO)
         {
 
             PageFilterResponseDTO<T> pageFilterResponseDTO = new PageFilterResponseDTO<T>();
@@ -15,27 +15,54 @@ namespace BusinessAccess.Repository
             pageFilterResponseDTO.OrderColumnName = pageFilterDTO.OrderByColumnName;
             pageFilterResponseDTO.OrderBy = pageFilterDTO.OrderBy;
 
+            var searchProperties = typeof(T).GetProperties();
+
+            /// searching from key
+            
+
+            //string searchValue  = pageFilterDTO.search?.ToLower();
+
+            //if (!string.IsNullOrEmpty(searchValue))
+            //{
+            //    entity = entity.Where(e =>
+            //    {
+            //        foreach (var entityProperty in searchProperties)
+            //        {
+            //            if ((bool)(entityProperty.GetValue(e)?.ToString().ToLower().Contains(searchValue)))
+            //            {
+            //                return true;
+            //            }
+            //        }
+            //        return false;
+            //    }).ToList();
+
+            //    foreach (var entityProperty in searchProperties)
+            //    {
+            //        entity = entity.OrderBy(e => entityProperty.GetValue(e)?.ToString()).ToList();
+            //    }
+            //}
 
 
-            /// Searching
+            /// Searching from filter
             var searchColumns = pageFilterDTO.SearchByColumns;
 
             if (searchColumns != null)
             {
-                var searchProperties = typeof(T).GetProperties();
                 var columnProperties = searchColumns.GetType().GetProperties();
 
                 foreach (var columnProperty in columnProperties)
                 {
-                    if (columnProperty.Name == "Id")
-                        continue;
-                    var searchValue = columnProperty.GetValue(searchColumns)?.ToString().ToLower();
-                    if (!string.IsNullOrEmpty(searchValue))
+                    var thissearchValue = columnProperty.GetValue(searchColumns)?.ToString().ToLower();
+                    if (!string.IsNullOrEmpty(thissearchValue))
                     {
                         var entityProperty = searchProperties.FirstOrDefault(p => p.Name == columnProperty.Name);
                         if (entityProperty != null)
                         {
-                            entity = entity.Where(e => (bool)(entityProperty.GetValue(e)?.ToString().ToLower().Contains(searchValue))).ToList();
+                            entity = entity
+                                .Where(e => (bool)(entityProperty.GetValue(e)?.ToString().ToLower().Contains(thissearchValue)))
+                                .OrderBy(e => entityProperty.GetValue(e)?.ToString().IndexOf(thissearchValue) ?? int.MaxValue)
+                                .ThenBy(e => entityProperty.GetValue(e)?.ToString())
+                                .ToList();
                         }
                     }
                 }

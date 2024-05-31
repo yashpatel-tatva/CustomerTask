@@ -8,8 +8,8 @@ namespace BusinessAccess.Repository
 {
     public class CustomerRepository : Repository<Customer>, ICustomerRepository
     {
-        private readonly IPaginationRepository<CustomerListViewModel> _paginationRepository;
-        public CustomerRepository(CustomerDbContext db, IPaginationRepository<CustomerListViewModel> paginationRepository) : base(db)
+        private readonly IPaginationRepository<CustomerListViewModel , CustomerSearchFilterDTO> _paginationRepository;
+        public CustomerRepository(CustomerDbContext db, IPaginationRepository<CustomerListViewModel , CustomerSearchFilterDTO> paginationRepository) : base(db)
         {
             _db = db;
             _paginationRepository = paginationRepository;
@@ -89,7 +89,7 @@ namespace BusinessAccess.Repository
         //    return customer.Count();
         //}
 
-        public PageFilterResponseDTO<CustomerListViewModel> GetCustomerList(PageFilterRequestDTO<CustomerListViewModel> pageFilter)
+        public PageFilterResponseDTO<CustomerListViewModel> GetCustomerList(PageFilterRequestDTO<CustomerSearchFilterDTO> pageFilter)
         {
             string search = pageFilter.search;
             int currentpage = pageFilter.currentpage;
