@@ -1,0 +1,104 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - CustomerTask</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/CustomerTask.styles.css" asp-append-version="true" />
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" asp-append-version="true"></script>
+    <script src="https://kit.fontawesome.com/3a611923b3.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js" asp-append-version="true"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js" asp-append-version="true"></script>
+</head>
+<body>
+    <div class="d-flex px-3 pt-3 w-100" style="background-color : #303A45 ; color : grey">
+        <div class="col-6  justify-content-center  d-flex rounded" style="color:white">
+            <div class="searchdiv rounded" style="height : fit-content">
+                <i class="fas fa-bars"></i>
+                <input type="search" id="search" value="@ViewBag.Search" class="border-0 text-white" placeholder="Search Customer" />
+                    <i class="fas fa-search"></i>
+            </div>
+        </div>
+        <div class="col-6 mt-2 d-flex">
+            <ul class="nav nav-tabs align-items-end" id="myTab" role="tablist">
+                <li class="nav-item d-flex" role="presentation" style="height : fit-content">
+                    <button class="nav-link fw-bolder" id="listtab" data-bs-toggle="tab" data-bs-target="#list" type="button" role="tab" aria-selected="true"> <i class="fas fa-list"></i> List</button>
+                </li>
+                @*<li class="nav-item" role="presentation">
+                    <button class="nav-link fw-bolder" id="detailtab" data-bs-toggle="tab" data-bs-target="#detail" type="button" role="tab" aria-selected="false"><i class="bi bi-list-task"></i> Details</button>
+                </li>*@
+            </ul>
+        </div>
+    </div>
+    <div class="tab-content px-3">
+        <div class="d-flex w-100 p-3 my-2 justify-content-between align-items-center" style="background-color : #F7F9FA">
+
+            <div class="h4" id="listdiv" style="color : #303A4F">
+                <span id="datainfo"></span>
+            </div>
+
+            <div id="detaildiv">
+                <div class="h4 mb-0 d-flex gap-2 align-items-center" style="color : #303A4F">
+                    <div id="customerid" class="rounded-pill text-white p-1 px-3" style="background-color : #303A45"></div>
+                    <span id="customername"></span>
+                </div>
+            </div>
+
+
+            <div class="d-flex gap-3"> 
+                <div class="bg-white text-info p-2 rounded shadow addcustomer"><i class="fa-solid fa-plus fa-xl"></i></div>
+                <div class="bg-white text-danger p-2 rounded shadow deletecustomer"><i class="fa-solid fa-trash-can fa-xl" ></i></div>
+            </div>
+
+
+        </div>
+
+       @* <dialog id="adddialog" class="w-50">
+            <input type="hidden" id="isedit" />
+            <form id="form">
+                <div class="d-flex gap-2">
+                    <div class="row gap-2">
+                        <input type="hidden" name="Id"/>
+                        <div class="col-xl-5">A/C</div>                     <div class="col-xl-6"><input type="text" name="Ac" oninput="this.value = this.value.toUpperCase()" required /></div>
+                        <div class="col-xl-5">Name</div>                     <div class="col-xl-6"><input type="text" name="Name" required /></div>
+                        <div class="col-xl-5">Postcode</div>                     <div class="col-xl-6"><input type="text" name="Postcode" required /></div>
+                        <div class="col-xl-5">Country</div>                     <div class="col-xl-6"><input type="text" name="Country" required /></div>
+                        <div class="col-xl-5">Telephone</div>                     <div class="col-xl-6"><input type="text" name="Telephone" required /></div>
+                        <div class="col-xl-5">Relation</div>                     <div class="col-xl-6"><input type="text" name="Relation" required /></div>
+                        <div class="col-xl-5">Currency</div>                     <div class="col-xl-6"><input type="text" name="Currency" required /></div>
+                        <div class="col-xl-5">Address1</div>                     <div class="col-xl-6"><input type="text" name="Address1" required /></div>
+                        <div class="col-xl-5">Address2</div>                     <div class="col-xl-6"><input type="text" name="Address2" required /></div>
+                        <div class="col-xl-5">Town</div>                     <div class="col-xl-6"><input type="text" name="Town" required /></div>
+                        <div class="col-xl-5">Couty</div>                     <div class="col-xl-6"><input type="text" name="County" required /></div>
+                        <div class="col-xl-5">Email</div>                     <div class="col-xl-6"><input type="email" name="Email" required /></div>
+                        <div class="col-xl-5">Is subscribe?</div>                     <div class="col-xl-6"><input type="checkbox" name="Issubscribe" /></div>
+                    </div>
+                </div>
+                <div class="d-flex gap-2 justify-content-end">
+                    <button class="btn btn-info " type="button" id="addsubmit">Submit</button>
+                    <button class="btn btn-danger" type="button" onclick="hideThisDialog()">Close</button>
+                </div>
+            </form>
+        </dialog>*@
+
+        <div class="popup"></div>
+
+        <div id="myTabContent">
+    @RenderBody()
+        </div>
+    </div>
+    <script src="~/js/main.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @*<script src="~/js/site.js" asp-append-version="true"></script>*@
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

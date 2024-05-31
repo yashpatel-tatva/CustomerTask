@@ -1,0 +1,75 @@
+﻿@{
+    ViewData["Title"] = "Customer:"+Model;
+}
+
+
+<div class="recorddiv">
+    <div class="col-xl-6 border-1" style="border :0.5px solid #6A7179">
+        <div class="w-100 p-1 fw-bold" style="background-color: #F7F9FA ; font-size: 1.25rem"><i class="bi bi-building ps-3"></i> Invoice Address <i class="bi bi-pen-fill editthis" ></i></div>
+        <div class="table-responsive">
+            <table class="table ps-3">
+                <tr>
+                    <td>Code</td>
+                    <td>
+                        <select id="acdrop" disabled style="border:none">
+                            <option selected hidden value="@Model">@Model</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Company</td>
+                    <td id="company"></td>
+                </tr>
+                <tr>
+                    <td>Address1</td>
+                    <td id="address1"></td>
+                </tr>
+                <tr>
+                    <td>Address2</td>
+                    <td id="address2"></td>
+                </tr>
+                <tr>
+                    <td>Town</td>
+                    <td id="town"></td>
+                </tr>
+                <tr>
+                    <td>County</td>
+                    <td id="county"></td>
+                </tr>
+                <tr>
+                    <td>Postcode</td>
+                    <td id="postcode"></td>
+                </tr>
+                <tr>
+                    <td>Country</td>
+                    <td id="country"></td>
+                </tr>
+                <tr>
+                    <td>Telephone</td>
+                    <td id="telephone"></td>
+                </tr>
+                <tr>
+                    <td>Email</td>
+                    <td id="email"></td>
+                </tr>
+                <tr>
+                    <td>Mailing List</td>
+                    <td id="mailinglist"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="thisid" />
+
+<style>
+    tr , td {
+        border : none;
+    }
+    td {
+        padding : 0.5rem 0.5rem 0.5rem 3rem !important;
+    }
+</style>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" asp-append-version="true"></script>
+                    <script src="~/js/site.js" asp-append-version="true"></script>

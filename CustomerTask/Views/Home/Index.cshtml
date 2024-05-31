@@ -1,0 +1,111 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+<style>
+    .table thead th {
+        position: sticky;
+        top: 0;
+        background-color: #f8f9fa; /* Set your desired background color */
+    }
+
+    ::-webkit-scrollbar {
+        width: 8px; /* Set the width of the scrollbar */
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background-color: #303A45; /* Set the color of the scrollbar thumb */
+    }
+
+    .datadiv{
+        transition : 2s;
+    }
+
+    .notselect {
+        -webkit-user-select: none; /* Safari */
+        -ms-user-select: none; /* IE 10 and IE 11 */
+        user-select: none; /* Standard syntax */
+    }
+
+</style>
+
+
+
+
+<div class="table-responsive" style="height: 65vh;">
+    <table class="table table-hover" style="overflow-y: scroll;">
+        <thead>
+            <tr>
+                <th class="notselect" style="width : 14.28%" data-id="@ViewBag.acsort" id="acsortth" role="button">A/C Code          <i id="acsorticn" class="bi bi-arrow-right"></i> </th>
+                <th class="notselect" style="width : 14.28%" data-id="@ViewBag.namesort" id="namesortth" role="button">Customer        <i id="namesorticn" class="bi bi-arrow-right"></i> </th>
+                <th class="notselect" style="width : 14.28%" data-id="@ViewBag.pcsort" id="pcsortth" role="button">Postcode          <i id="pcsorticn" class="bi bi-arrow-right"></i> </th>
+                <th class="notselect" style="width : 14.28%" data-id="@ViewBag.cntrysort" id="cntrysortth" role="button">Country        <i id="cntrysorticn" class="bi bi-arrow-right"></i> </th>
+                <th class="notselect" style="width : 14.28%" data-id="@ViewBag.tpsort" id="tpsortth" role="button">Telephone         <i id="tpsorticn" class="bi bi-arrow-right"></i> </th>
+                <th class="notselect" style="width : 14.28%" data-id="@ViewBag.rlsnsort" id="rlsnsortth" role="button">ReplationShip   <i id="rlsnsorticn" class="bi bi-arrow-right"></i> </th>
+                <th class="notselect" style="width : 14.28%" data-id="@ViewBag.currsort" id="currsortth" role="button">Currency        <i id="currsorticn" class="bi bi-arrow-right"></i> </th>
+            </tr>
+        </thead>
+        <tbody class="datadiv">
+        </tbody>
+    </table>
+</div>
+<hr style="height : 3px" class="text-muted" />
+<div class="d-flex justify-content-around">
+    <div>
+        No. Of Records : <select id="pagesize" value="@ViewBag.PageSize">
+            <option value="10">10</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+        </select>
+    </div>
+    <div>
+        Go To Page: <select id="gotodrop"></select>
+    </div>
+    <div class="d-flex align-items-center">
+        <div class="paginate_first text-info"><i class="fa-solid fa-forward-fast fa-flip-horizontal"></i></div>
+        <div class="paginate_Previousbutton text-info"><i class="fa-solid fa-caret-left"></i></i></div>
+        <div class="dataTables_paginate d-flex">
+            <div class="paginate_button pagebtn_1" data-id="@ViewBag.Currentpage">@ViewBag.Currentpage</div>
+        </div>
+        <div class="paginate_Nextbutton text-info"><i class="fa-solid fa-caret-right"></i></div>
+        <div class="paginate_last text-info"><i class="fa-solid fa-forward-fast"></i></div>
+    </div>
+</div>
+
+
+<script>
+    var pagesize = "@ViewBag.PageSize";
+    var currentpage = "@ViewBag.CurrentPage";
+    var search = "@ViewBag.Search";
+    var acsort = @ViewBag.acsort;
+    var namesort = @ViewBag.namesort;
+    var pcsort = @ViewBag.pcsort;
+    var cntrysort = @ViewBag.cntrysort;
+    var tpsort = @ViewBag.tpsort;
+    var rlsnsort = @ViewBag.rlsnsort;
+    var currsort = @ViewBag.currsort;
+    $('#pagesize').val(pagesize)
+    $('.nav-link').removeClass('active')
+    $('#listtab').addClass('active')
+</script>
+
+<script src="~/js/list.js" asp-append-version="true"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" asp-append-version="true"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js" asp-append-version="true"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js" asp-append-version="true"></script>
+
