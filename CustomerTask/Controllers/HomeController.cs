@@ -12,24 +12,25 @@ namespace CustomerTask.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly ICustomerRepository _customer;
 
+
         public HomeController(ILogger<HomeController> logger, ICustomerRepository customerRepository)
         {
             _logger = logger;
             _customer = customerRepository;
         }
 
-        public IActionResult Index(PageFilterDTO pageFilterDTO)
+        public IActionResult Index(PageFilterRequestDTO<CustomerListViewModel> pageFilterDTO)
         {
             ViewBag.Search = pageFilterDTO.search;
             ViewBag.Currentpage = pageFilterDTO.currentpage;
             ViewBag.PageSize = pageFilterDTO.pagesize;
-            ViewBag.acsort = pageFilterDTO.acsort;
-            ViewBag.namesort = pageFilterDTO.namesort;
-            ViewBag.pcsort = pageFilterDTO.pcsort;
-            ViewBag.cntrysort = pageFilterDTO.cntrysort;
-            ViewBag.tpsort = pageFilterDTO.tpsort;
-            ViewBag.rlsnsort = pageFilterDTO.rlsnsort;
-            ViewBag.currsort = pageFilterDTO.currsort;
+            //ViewBag.acsort = pageFilterDTO.acsort;
+            //ViewBag.namesort = pageFilterDTO.namesort;
+            //ViewBag.pcsort = pageFilterDTO.pcsort;
+            //ViewBag.cntrysort = pageFilterDTO.cntrysort;
+            //ViewBag.tpsort = pageFilterDTO.tpsort;
+            //ViewBag.rlsnsort = pageFilterDTO.rlsnsort;
+            //ViewBag.currsort = pageFilterDTO.currsort;
             return View();
         }
 
@@ -38,20 +39,24 @@ namespace CustomerTask.Controllers
             return View("DetailOfCustomer", acno);
         }
 
-        public int GetCustomerCount(string search)
+        //public int GetCustomerCount(string search)
+        //{
+        //    return _customer.GetCustomerCount(search);
+        //}
+
+        public PageFilterResponseDTO<CustomerListViewModel> GetCustomerList(PageFilterRequestDTO<CustomerListViewModel> pageFilterDTO)
         {
-            return _customer.GetCustomerCount(search);
+            PageFilterResponseDTO<CustomerListViewModel> model = _customer.GetCustomerList(pageFilterDTO);
+            return model;
         }
 
-        public List<CustomerListViewModel> GetCustomerList(PageFilterDTO pageFilterDTO)
+        [HttpPost]
+        public IActionResult GetCustomerListView([FromBody]PageFilterRequestDTO<CustomerListViewModel> pageFilterDTO)
         {
-            return _customer.GetCustomerList(pageFilterDTO);
-        }
-
-        public IActionResult GetCustomerListView(PageFilterDTO pageFilterDTO)
-        {
-            List<CustomerListViewModel> model = GetCustomerList(pageFilterDTO);
-            return PartialView("ListView", model);
+            PageFilterResponseDTO<CustomerListViewModel> model = GetCustomerList(pageFilterDTO);
+            int pagncount = model.TotalPage;
+            int totalrecords = model.TotalRecords;
+            return PartialView("ListView" , model);
         }
 
         public List<string> AccountNoDrop()
@@ -86,7 +91,7 @@ namespace CustomerTask.Controllers
             model.Isdelete = false;
 
 
-            List<string> issuscribe = Request.Form["Issubscribe"].ToList();
+            List<string?> issuscribe = Request.Form["Issubscribe"].ToList();
             if (issuscribe.Count != 0)
             {
                 model.Issubscribe = true;

@@ -14,8 +14,8 @@ namespace BusinessAccess.Repository.IRepository
         void DeleteCustomerlist(List<int> ids);
         void Editthis(Customer model);
         List<string> GetAllAcoountNumber();
-        int GetCustomerCount(string search);
-        List<CustomerListViewModel> GetCustomerList(PageFilterDTO pageFilterDTO);
+        //int GetCustomerCount(string search);
+        PageFilterResponseDTO<CustomerListViewModel> GetCustomerList(PageFilterRequestDTO<CustomerListViewModel> pageFilterDTO);
         Customer GetInfoOfAC(string acno);
         Customer GetInfoOfId(int id);
 

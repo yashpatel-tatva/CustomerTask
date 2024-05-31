@@ -1,9 +1,10 @@
 ﻿@model CustomerDetailViewModel
 <style>
     .text-pink{
-        color: #ff7272;
+        color: #ff7272 !important;
         font-size : small;
     }
+
 </style>
 
 <dialog id="adddialog" class="w-50 p-3 rounded border" style="background-color: #303A45; color: #FFFFFF;">
@@ -13,18 +14,18 @@
         <div class="d-flex flex-wrap gap-2">
             <div class="row gap-2">
                 <input type="hidden" name="Id" asp-for="Id" />
-                <div class="col-xl-5 ps-5 font-weight-bold">A/C</div>                     <div class="col-xl-6"><input type="text" name="Ac" asp-for="Ac" oninput="this.value = this.value.toUpperCase()" required class="form-control" /><span asp-validation-for="Ac" class="text-pink"></span></div>
-                <div class="col-xl-5 ps-5 font-weight-bold">Name</div>                     <div class="col-xl-6"><input type="text" name="Name" asp-for="Name" required class="form-control" /><span asp-validation-for="Name" class="text-pink"></span></div>
-                <div class="col-xl-5 ps-5 font-weight-bold">Postcode</div>                     <div class="col-xl-6"><input type="text" asp-for="Postcode" required class="form-control" /><span asp-validation-for="Postcode" class="text-pink"></span></div>
-                <div class="col-xl-5 ps-5 font-weight-bold">Country</div>                     <div class="col-xl-6"><input type="text" asp-for="Country" required class="form-control" /><span asp-validation-for="Country" class="text-pink"></span></div>
-                <div class="col-xl-5 ps-5 font-weight-bold">Telephone</div>                     <div class="col-xl-6"><input type="text" asp-for="Telephone" required class="form-control" /><span asp-validation-for="Telephone" class="text-pink"></span></div>
-                <div class="col-xl-5 ps-5 font-weight-bold">Relation</div>                     <div class="col-xl-6"><input type="text" asp-for="Relation" required class="form-control" /><span asp-validation-for="Relation" class="text-pink"></span></div>
-                <div class="col-xl-5 ps-5 font-weight-bold">Currency</div>                     <div class="col-xl-6"><input type="text" asp-for="Currency" required class="form-control" /><span asp-validation-for="Currency" class="text-pink"></span></div>
-                <div class="col-xl-5 ps-5 font-weight-bold">Address1</div>                     <div class="col-xl-6"><input type="text" asp-for="Address1" required class="form-control" /><span asp-validation-for="Address1" class="text-pink"></span></div>
-                <div class="col-xl-5 ps-5 font-weight-bold">Address2</div>                     <div class="col-xl-6"><input type="text" asp-for="Address2" required class="form-control" /><span asp-validation-for="Address2" class="text-pink"></span></div>
-                <div class="col-xl-5 ps-5 font-weight-bold">Town</div>                     <div class="col-xl-6"><input type="text" asp-for="Town" required class="form-control" /><span asp-validation-for="Town" class="text-pink"></span></div>
-                <div class="col-xl-5 ps-5 font-weight-bold">County</div>                     <div class="col-xl-6"><input type="text" asp-for="County" required class="form-control" /><span asp-validation-for="County" class="text-pink"></span></div>
-                <div class="col-xl-5 ps-5 font-weight-bold">Email</div>                     <div class="col-xl-6"><input type="email" asp-for="Email" required class="form-control" /><span asp-validation-for="Email" class="text-pink"></span></div>
+                <div class="col-xl-5 ps-5 font-weight-bold">A/C</div>                     <div class="col-xl-6"><input type="text" name="Ac" asp-for="Ac" oninput="this.value = this.value.toUpperCase()" required class="" /><span asp-validation-for="Ac" class="text-pink"></span></div>
+                <div class="col-xl-5 ps-5 font-weight-bold">Name</div>                     <div class="col-xl-6"><input type="text" name="Name" asp-for="Name" required class="" /><span asp-validation-for="Name" class="text-pink"></span></div>
+                <div class="col-xl-5 ps-5 font-weight-bold">Postcode</div>                     <div class="col-xl-6"><input type="text" asp-for="Postcode" required class="" /><span asp-validation-for="Postcode" class="text-pink"></span></div>
+                <div class="col-xl-5 ps-5 font-weight-bold">Country</div>                     <div class="col-xl-6"><input type="text" asp-for="Country" required class="" /><span asp-validation-for="Country" class="text-pink"></span></div>
+                <div class="col-xl-5 ps-5 font-weight-bold">Telephone</div>                     <div class="col-xl-6"><input type="text" asp-for="Telephone" required class="" /><span asp-validation-for="Telephone" class="text-pink"></span></div>
+                <div class="col-xl-5 ps-5 font-weight-bold">Relation</div>                     <div class="col-xl-6"><input type="text" asp-for="Relation" required class="" /><span asp-validation-for="Relation" class="text-pink"></span></div>
+                <div class="col-xl-5 ps-5 font-weight-bold">Currency</div>                     <div class="col-xl-6"><input type="text" asp-for="Currency" required class="" /><span asp-validation-for="Currency" class="text-pink"></span></div>
+                <div class="col-xl-5 ps-5 font-weight-bold">Address1</div>                     <div class="col-xl-6"><input type="text" asp-for="Address1" required class="" /><span asp-validation-for="Address1" class="text-pink"></span></div>
+                <div class="col-xl-5 ps-5 font-weight-bold">Address2</div>                     <div class="col-xl-6"><input type="text" asp-for="Address2" required class="" /><span asp-validation-for="Address2" class="text-pink"></span></div>
+                <div class="col-xl-5 ps-5 font-weight-bold">Town</div>                     <div class="col-xl-6"><input type="text" asp-for="Town" required class="" /><span asp-validation-for="Town" class="text-pink"></span></div>
+                <div class="col-xl-5 ps-5 font-weight-bold">County</div>                     <div class="col-xl-6"><input type="text" asp-for="County" required class="" /><span asp-validation-for="County" class="text-pink"></span></div>
+                <div class="col-xl-5 ps-5 font-weight-bold">Email</div>                     <div class="col-xl-6"><input type="email" asp-for="Email" required class="" /><span asp-validation-for="Email" class="text-pink"></span></div>
                 <div class="col-xl-5 ps-5 font-weight-bold">Is subscribe?</div>                     <div class="col-xl-6">
                     <input type="checkbox" name="Issubscribe"
                     @if (Model.Issubscribe == true)

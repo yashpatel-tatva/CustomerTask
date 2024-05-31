@@ -1,6 +1,7 @@
 using BusinessAccess.Repository;
 using BusinessAccess.Repository.IRepository;
 using CustomerTask;
+using DataAccess.DataViewModel;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +12,7 @@ builder.Services.AddDbContext<CustomerDbContext>();
 
 
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
-builder.Services.AddScoped<IPaginationRepository<Customer>, PaginationRepository<Customer>>();
+builder.Services.AddScoped<IPaginationRepository<CustomerListViewModel>, PaginationRepository<CustomerListViewModel>>();
 
 var app = builder.Build();
 

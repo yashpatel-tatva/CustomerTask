@@ -1,17 +1,20 @@
-﻿@using DataAccess.DataViewModel
-@model List<CustomerListViewModel>
+﻿@using DataAccess.DTOs
+@using DataAccess.DataViewModel
+@model PageFilterResponseDTO<CustomerListViewModel>
 
 
 
-        @foreach (var c in Model)
-        {
-            <tr data-id="@c.AC" data-name="@c.Id" class="customerrow">
-                <td>@c.AC</td>
-                <td>@c.Name</td>
-                <td>@c.PostCode</td>
-                <td>@c.Country</td>
-                <td>@c.Telephone</td>
-                <td>@c.Relationship</td>
-                <td>@c.currency</td>
-            </tr>
-        }
+@foreach (var c in Model.Data)
+{
+    <tr data-id="@c.AC" data-name="@c.Id" class="customerrow">
+        <td>@c.AC</td>
+        <td>@c.Name</td>
+        <td>@c.PostCode</td>
+        <td>@c.Country</td>
+        <td>@c.Telephone</td>
+        <td>@c.Relationship</td>
+        <td>@c.currency</td>
+    </tr>
+}
+
+<input type="hidden" id="totalrecords" value="@Model.TotalRecords"/>

@@ -1,7 +1,9 @@
-﻿namespace BusinessAccess.Repository.IRepository
+﻿using DataAccess.DTOs;
+
+namespace BusinessAccess.Repository.IRepository
 {
     public interface IPaginationRepository<T> where T : class
     {
-        List<T> GetPagedData(List<T> entity, int currentpage, int pagesize);
+        PageFilterResponseDTO<T> GetPagedData(List<T> entity, PageFilterRequestDTO<T> pageFilterDTO);
     }
 }

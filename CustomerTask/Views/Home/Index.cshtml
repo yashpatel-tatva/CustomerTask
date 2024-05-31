@@ -18,8 +18,8 @@
         background-color: #303A45; /* Set the color of the scrollbar thumb */
     }
 
-    .datadiv{
-        transition : 2s;
+    .datadiv {
+        transition: 2s;
     }
 
     .notselect {
@@ -28,22 +28,70 @@
         user-select: none; /* Standard syntax */
     }
 
+    .fa-sort {
+        opacity: 50%;
+    }
 </style>
 
 
+<div class="my-3">
+    <form id="searchform"> 
+        <div class="p-3 d-flex row">
+            <div class="col-3 py-2">
+                <div class="form-group d-flex align-items-center rounded">
+                    <input type="text" class="form-control" name="AC" placeholder=""><span>Ac</span>
+                </div>
+            </div>
+            <div class="col-3 py-2">
+                <div class="form-group d-flex align-items-center rounded">
+                    <input type="text" class="form-control" name="Name" placeholder=""><span>Name</span>
+                </div>
+            </div>
+            <div class="col-3 py-2">
+                <div class="form-group d-flex align-items-center rounded">
+                    <input type="text" class="form-control" name="PostCode" placeholder=""><span>Postcode</span>
+                </div>
+            </div>
+            <div class="col-3 py-2">
+                <div class="form-group d-flex align-items-center rounded">
+                    <input type="text" class="form-control" name="Country" placeholder=""><span>Country</span>
+                </div>
+            </div>
+            <div class="col-3 py-2">
+                <div class="form-group d-flex align-items-center rounded">
+                    <input type="text" class="form-control" name="Telephone" placeholder=""><span>Telephone</span>
+                </div>
+            </div>
+            <div class="col-3 py-2">
+                <div class="form-group d-flex align-items-center rounded">
+                    <input type="text" class="form-control" name="Relationship" placeholder=""><span>Relation</span>
+                </div>
+            </div>
+            <div class="col-3 py-2">
+                <div class="form-group d-flex align-items-center rounded">
+                    <input type="text" class="form-control" name="currency" placeholder=""><span>Currency</span>
+                </div>
+            </div>
+            <div class="col-3 d-flex gap-3 justify-content-center align-content-center py-2">
+                <div class="bg-white px-4 p-2 rounded shadow clearfilter" role="button" style="color: #303A45"><i class="fa-solid fa-broom fa-lg"></i></div>
+                <div class="bg-white px-4 p-2 rounded shadow searchfilter" role="button" style="color: #303A45"><i class="fa-solid fa-magnifying-glass falkland"></i> Search</div>
+            </div>
+        </div>
+    </form>
+</div>
 
 
-<div class="table-responsive" style="height: 65vh;">
+<div class="table-responsive" style="height: 50vh;">
     <table class="table table-hover" style="overflow-y: scroll;">
         <thead>
             <tr>
-                <th class="notselect" style="width : 14.28%" data-id="@ViewBag.acsort" id="acsortth" role="button">A/C Code          <i id="acsorticn" class="bi bi-arrow-right"></i> </th>
-                <th class="notselect" style="width : 14.28%" data-id="@ViewBag.namesort" id="namesortth" role="button">Customer        <i id="namesorticn" class="bi bi-arrow-right"></i> </th>
-                <th class="notselect" style="width : 14.28%" data-id="@ViewBag.pcsort" id="pcsortth" role="button">Postcode          <i id="pcsorticn" class="bi bi-arrow-right"></i> </th>
-                <th class="notselect" style="width : 14.28%" data-id="@ViewBag.cntrysort" id="cntrysortth" role="button">Country        <i id="cntrysorticn" class="bi bi-arrow-right"></i> </th>
-                <th class="notselect" style="width : 14.28%" data-id="@ViewBag.tpsort" id="tpsortth" role="button">Telephone         <i id="tpsorticn" class="bi bi-arrow-right"></i> </th>
-                <th class="notselect" style="width : 14.28%" data-id="@ViewBag.rlsnsort" id="rlsnsortth" role="button">ReplationShip   <i id="rlsnsorticn" class="bi bi-arrow-right"></i> </th>
-                <th class="notselect" style="width : 14.28%" data-id="@ViewBag.currsort" id="currsortth" role="button">Currency        <i id="currsorticn" class="bi bi-arrow-right"></i> </th>
+                <th class="notselect" style="width : 14.28%" data-url="false" data-name="AC" id="acsortth" role="button">A/C Code     <i class="fa-solid fa-sort-up"></i> </th>
+                <th class="notselect" style="width : 14.28%" data-url="false" data-name="Name" id="namesortth" role="button">Customer          <i class="fa-solid fa-sort"></i> </th>
+                <th class="notselect" style="width : 14.28%" data-url="false" data-name="PostCode" id="pcsortth" role="button">Postcode        <i class="fa-solid fa-sort"></i> </th>
+                <th class="notselect" style="width : 14.28%" data-url="false" data-name="Country" id="cntrysortth" role="button">Country       <i class="fa-solid fa-sort"></i> </th>
+                <th class="notselect" style="width : 14.28%" data-url="false" data-name="Telephone" id="tpsortth" role="button">Telephone      <i class="fa-solid fa-sort"></i> </th>
+                <th class="notselect" style="width : 14.28%" data-url="false" data-name="Relationship" id="rlsnsortth" role="button">ReplationShip <i class="fa-solid fa-sort"></i> </th>
+                <th class="notselect" style="width : 14.28%" data-url="false" data-name="currency" id="currsortth" role="button">Currency      <i class="fa-solid fa-sort"></i> </th>
             </tr>
         </thead>
         <tbody class="datadiv">
@@ -62,14 +110,14 @@
     <div>
         Go To Page: <select id="gotodrop"></select>
     </div>
-    <div class="d-flex align-items-center">
-        <div class="paginate_first text-info"><i class="fa-solid fa-forward-fast fa-flip-horizontal"></i></div>
-        <div class="paginate_Previousbutton text-info"><i class="fa-solid fa-caret-left"></i></i></div>
+    <div class="d-flex align-items-center rounded-1">
+        <div class="paginate_first "><i class="fa-solid fa-forward-fast fa-flip-horizontal"></i></div>
+        <div class="paginate_Previousbutton "><i class="fa-solid fa-caret-left"></i></i></div>
         <div class="dataTables_paginate d-flex">
             <div class="paginate_button pagebtn_1" data-id="@ViewBag.Currentpage">@ViewBag.Currentpage</div>
         </div>
-        <div class="paginate_Nextbutton text-info"><i class="fa-solid fa-caret-right"></i></div>
-        <div class="paginate_last text-info"><i class="fa-solid fa-forward-fast"></i></div>
+        <div class="paginate_Nextbutton "><i class="fa-solid fa-caret-right"></i></div>
+        <div class="paginate_last "><i class="fa-solid fa-forward-fast"></i></div>
     </div>
 </div>
 
@@ -78,13 +126,13 @@
     var pagesize = "@ViewBag.PageSize";
     var currentpage = "@ViewBag.CurrentPage";
     var search = "@ViewBag.Search";
-    var acsort = @ViewBag.acsort;
-    var namesort = @ViewBag.namesort;
-    var pcsort = @ViewBag.pcsort;
-    var cntrysort = @ViewBag.cntrysort;
-    var tpsort = @ViewBag.tpsort;
-    var rlsnsort = @ViewBag.rlsnsort;
-    var currsort = @ViewBag.currsort;
+    var acsort = 0;
+    var namesort = 0;
+    var pcsort = 0;
+    var cntrysort = 0;
+    var tpsort = 0;
+    var rlsnsort = 0;
+    var currsort = 0;
     $('#pagesize').val(pagesize)
     $('.nav-link').removeClass('active')
     $('#listtab').addClass('active')

@@ -37,7 +37,7 @@ $('.deletecustomer').on('click', function () {
                 icon: "warning",
                 title: "Select At Least One",
                 showConfirmButton: false,
-                timer: 1500
+                timer: 500
             });
         }
     }
