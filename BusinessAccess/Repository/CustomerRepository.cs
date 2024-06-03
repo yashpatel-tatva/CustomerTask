@@ -8,8 +8,8 @@ namespace BusinessAccess.Repository
 {
     public class CustomerRepository : Repository<Customer>, ICustomerRepository
     {
-        private readonly IPaginationRepository<CustomerListViewModel , CustomerSearchFilterDTO> _paginationRepository;
-        public CustomerRepository(CustomerDbContext db, IPaginationRepository<CustomerListViewModel , CustomerSearchFilterDTO> paginationRepository) : base(db)
+        private readonly IPaginationRepository<CustomerListViewModel, CustomerSearchFilterDTO> _paginationRepository;
+        public CustomerRepository(CustomerDbContext db, IPaginationRepository<CustomerListViewModel, CustomerSearchFilterDTO> paginationRepository) : base(db)
         {
             _db = db;
             _paginationRepository = paginationRepository;
@@ -70,71 +70,12 @@ namespace BusinessAccess.Repository
             return customer;
         }
 
-        //public int GetCustomerCount(string search)
-        //{
-        //    List<Customer> customer = _db.Customers.Where(x => x.Isdelete == false).ToList();
-        //    if (search != null)
-        //    {
-        //        customer = customer.Where(x =>
-        //        ((x.Ac != null) && (x.Ac.ToLower().Contains(search.ToLower()))) ||
-        //        ((x.Name != null) && (x.Name.ToLower().StartsWith(search.ToLower()))) ||
-        //        ((x.Postcode != null) && (x.Postcode.ToLower().StartsWith(search.ToLower()))) ||
-        //        ((x.Country != null) && (x.Country.ToLower().StartsWith(search.ToLower()))) ||
-        //        ((x.Telephone != null) && (x.Telephone.ToLower().Contains(search.ToLower()))) ||
-        //        ((x.Relation != null) && (x.Relation.ToLower().StartsWith(search.ToLower()))) ||
-        //        ((x.Currency != null) && (x.Currency.ToLower().StartsWith(search.ToLower())))
-        //        ).ToList();
-        //    }
-
-        //    return customer.Count();
-        //}
-
         public PageFilterResponseDTO<CustomerListViewModel> GetCustomerList(PageFilterRequestDTO<CustomerSearchFilterDTO> pageFilter)
         {
             string search = pageFilter.search;
             int currentpage = pageFilter.currentpage;
             int pagesize = pageFilter.pagesize;
-            List<Customer> customer = _db.Customers.OrderBy(x => x.Ac).Where(x => x.Isdelete == false).ToList();
-            List<Customer> customerslist = new List<Customer>();
-            if (!string.IsNullOrEmpty(search))
-            {
-                customerslist = customer.Where(x => (x.Ac != null) && (x.Ac.ToString().ToLower().Contains(search.ToLower())))
-                    .Union(customer.Where(x => (x.Name != null) && (x.Name.ToString().ToLower().Contains(search.ToLower()))))
-                    .Union(customer.Where(x => (x.Postcode != null) && (x.Postcode.ToString().ToLower().Contains(search.ToLower()))))
-                    .Union(customer.Where(x => (x.Country != null) && (x.Country.ToString().ToLower().Contains(search.ToLower()))))
-                    .Union(customer.Where(x => (x.Telephone != null) && (x.Telephone.ToString().ToLower().Contains(search.ToLower()))))
-                    .Union(customer.Where(x => (x.Relation != null) && (x.Relation.ToString().ToLower().Contains(search.ToLower()))))
-                    .Union(customer.Where(x => (x.Currency != null) && (x.Currency.ToString().ToLower().Contains(search.ToLower()))))
-                    .ToList();
-            }
-            else
-            {
-                customerslist = customer;
-            }
-
-            
-            List<CustomerListViewModel> model = GetCustomerViewList(customerslist);
-
-            //var sortParameters = new Dictionary<Func<Customer, object>, int>    {
-            //    { c => c.Ac, pageFilter.acsort },
-            //    { c => c.Name, pageFilter.namesort },
-            //    { c => c.Postcode, pageFilter.pcsort },
-            //    { c => c.Country, pageFilter.cntrysort },
-            //    { c => c.Telephone, pageFilter.tpsort },
-            //    { c => c.Relation, pageFilter.rlsnsort },
-            //    { c => c.Currency, pageFilter.currsort },
-            //};
-            //foreach (var sortParameter in sortParameters)
-            //{
-            //    if (sortParameter.Value == 1)
-            //    {
-            //        customerslist = customerslist.AsQueryable().OrderBy(sortParameter.Key).ToList();
-            //    }
-            //    else if (sortParameter.Value == 2)
-            //    {
-            //        customerslist = customerslist.OrderByDescending(sortParameter.Key).ToList();
-            //    }
-            //}
+            List<CustomerListViewModel> model = GetCustomerViewList(_db.Customers.OrderBy(x => x.Ac).Where(x => x.Isdelete == false).ToList());
             PageFilterResponseDTO<CustomerListViewModel> customerresponse = _paginationRepository.GetPagedData(model, pageFilter);
 
             return customerresponse;
@@ -153,7 +94,6 @@ namespace BusinessAccess.Repository
                    model.Telephone = c.Telephone;
                    model.Relationship = c.Relation;
                    model.currency = c.Currency;
-
                    return model;
                }).ToList<CustomerListViewModel>();
         }

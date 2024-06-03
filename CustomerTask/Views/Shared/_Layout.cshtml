@@ -23,7 +23,7 @@
             <div class="searchdiv rounded" style="height : fit-content">
                 <i class="fas fa-bars"></i>
                 <input type="search" id="search" value="@ViewBag.Search" class="border-0 text-white" placeholder="Search Customer" />
-                    <i class="fas fa-search"></i>
+                <i class="fas fa-search"></i>
             </div>
         </div>
         <div class="col-6 mt-2 d-flex">
@@ -31,9 +31,6 @@
                 <li class="nav-item d-flex" role="presentation" style="height : fit-content">
                     <button class="nav-link fw-bolder" id="listtab" data-bs-toggle="tab" data-bs-target="#list" type="button" role="tab" aria-selected="true"> <i class="fas fa-list"></i> List</button>
                 </li>
-                @*<li class="nav-item" role="presentation">
-                    <button class="nav-link fw-bolder" id="detailtab" data-bs-toggle="tab" data-bs-target="#detail" type="button" role="tab" aria-selected="false"><i class="bi bi-list-task"></i> Details</button>
-                </li>*@
             </ul>
         </div>
     </div>
@@ -52,53 +49,116 @@
             </div>
 
 
-            <div class="d-flex gap-3"> 
-                <div class="bg-white text-info p-2 rounded shadow addcustomer"><i class="fa-solid fa-plus fa-lg"></i></div>
-                <div class="bg-white text-danger p-2 rounded shadow deletecustomer"><i class="fa-solid fa-trash-can fa-lg" ></i></div>
+            <div class="d-flex gap-3">
+                <button class="add-button text-info addcustomer">
+                    <svg class="add-svgIcon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 45.402 45.402" >
+                            <path d="M41.267,18.557H26.832V4.134C26.832,1.851,24.99,0,22.707,0c-2.283,0-4.124,1.851-4.124,4.135v14.432H4.141 c-2.283,0-4.139,1.851-4.138,4.135c-0.001,1.141,0.46,2.187,1.207,2.934c0.748,0.749,1.78,1.222,2.92,1.222h14.453V41.27 c0,1.142,0.453,2.176,1.201,2.922c0.748,0.748,1.777,1.211,2.919,1.211c2.282,0,4.129-1.851,4.129-4.133V26.857h14.435 c2.283,0,4.134-1.867,4.133-4.15C45.399,20.425,43.548,18.557,41.267,18.557z"></path> </g> </g>
+                    </svg>
+                </button>
+                <button class="delete-button text-danger deletecustomer">
+                    <svg class="delete-svgIcon" viewBox="0 0 448 512">
+                        <path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"></path>
+                    </svg>
+                </button>
             </div>
 
 
         </div>
 
-       @* <dialog id="adddialog" class="w-50">
-            <input type="hidden" id="isedit" />
-            <form id="form">
-                <div class="d-flex gap-2">
-                    <div class="row gap-2">
-                        <input type="hidden" name="Id"/>
-                        <div class="col-xl-5">A/C</div>                     <div class="col-xl-6"><input type="text" name="Ac" oninput="this.value = this.value.toUpperCase()" required /></div>
-                        <div class="col-xl-5">Name</div>                     <div class="col-xl-6"><input type="text" name="Name" required /></div>
-                        <div class="col-xl-5">Postcode</div>                     <div class="col-xl-6"><input type="text" name="Postcode" required /></div>
-                        <div class="col-xl-5">Country</div>                     <div class="col-xl-6"><input type="text" name="Country" required /></div>
-                        <div class="col-xl-5">Telephone</div>                     <div class="col-xl-6"><input type="text" name="Telephone" required /></div>
-                        <div class="col-xl-5">Relation</div>                     <div class="col-xl-6"><input type="text" name="Relation" required /></div>
-                        <div class="col-xl-5">Currency</div>                     <div class="col-xl-6"><input type="text" name="Currency" required /></div>
-                        <div class="col-xl-5">Address1</div>                     <div class="col-xl-6"><input type="text" name="Address1" required /></div>
-                        <div class="col-xl-5">Address2</div>                     <div class="col-xl-6"><input type="text" name="Address2" required /></div>
-                        <div class="col-xl-5">Town</div>                     <div class="col-xl-6"><input type="text" name="Town" required /></div>
-                        <div class="col-xl-5">Couty</div>                     <div class="col-xl-6"><input type="text" name="County" required /></div>
-                        <div class="col-xl-5">Email</div>                     <div class="col-xl-6"><input type="email" name="Email" required /></div>
-                        <div class="col-xl-5">Is subscribe?</div>                     <div class="col-xl-6"><input type="checkbox" name="Issubscribe" /></div>
-                    </div>
-                </div>
-                <div class="d-flex gap-2 justify-content-end">
-                    <button class="btn btn-info " type="button" id="addsubmit">Submit</button>
-                    <button class="btn btn-danger" type="button" onclick="hideThisDialog()">Close</button>
-                </div>
-            </form>
-        </dialog>*@
+
 
         <div class="popup"></div>
 
         <div id="myTabContent">
-    @RenderBody()
+            @RenderBody()
         </div>
     </div>
     <script src="~/js/main.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    @*<script src="~/js/site.js" asp-append-version="true"></script>*@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+<style>
+    .delete-button, .add-button , .edit-button {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: white;
+        border: none;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.164);
+        cursor: pointer;
+        transition-duration: 0.3s;
+        overflow: hidden;
+        position: relative;
+    }
+
+        .add-svgIcon path {
+            fill: #0dcaf0;
+        }
+
+    .delete-svgIcon, .add-svgIcon , .edit-svgIcon{
+        width: 15px;
+        transition-duration: 0.3s;
+    }
+
+        .delete-svgIcon path {
+            fill: red;
+        }
+
+    .delete-button:hover , .add-button:hover , .edit-button:hover{
+        width: 90px;
+        border-radius: 50px;
+        transition-duration: 0.3s;
+        background-color: white;
+        align-items: center;
+    }
+
+        .delete-button:hover .delete-svgIcon ,
+        .add-button:hover .add-svgIcon,
+        .edit-button:hover .edit-button{
+            width: 20px;
+            transition-duration: 0.3s;
+            transform: translateY(60%);
+            -webkit-transform: rotate(360deg);
+            -moz-transform: rotate(360deg);
+            -o-transform: rotate(360deg);
+            -ms-transform: rotate(360deg);
+            transform: rotate(360deg);
+        }
+
+    .delete-button::before {
+        display: none;
+        content: "Delete";
+        color: red;
+        transition-duration: 0.3s;
+        font-size: 2px;
+    }
+    .add-button::before{
+        display: none;
+        content: "Add";
+        color: #0dcaf0;
+        transition-duration: 0.3s;
+        font-size: 5px;
+    }
+    .edit-button::before{
+        display: none;
+        content: "Edit";
+        /*color: #0dcaf0;*/
+        transition-duration: 0.3s;
+        font-size: 5px;
+    }
+    .delete-button:hover::before , .add-button:hover::before , .edit-button::before{
+        display: block;
+        padding-right: 10px;
+        font-size: 13px;
+        opacity: 1;
+        transform: translateY(0px);
+        transition-duration: 0.3s;
+    }
+</style>

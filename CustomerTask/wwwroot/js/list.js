@@ -2,6 +2,8 @@
 var count = 0;
 var orderbycolumnname = "AC";
 var orderby = true;
+var gotodrop = $('#gotodrop');
+
 
 var searchbycolumns = {
     AC: "",
@@ -38,10 +40,14 @@ function filterdata(search, currentpage, pagesize, orderbycolumnname, orderby, s
 function filtercount() {
     count = $('#totalrecords').val();
     btncount = Math.ceil(count / pagesize);
-    if (btncount == 0) {
+    $('#totalpages').text(btncount);
+    if (btncount < currentpage) {
         if (currentpage != 1) {
-            filterdata(search, 1, pagesize)
+            currentpage = 1;
+            filterdata(search, currentpage, pagesize)
         }
+    }
+    else if (btncount == 0) {
         $('#datainfo').text('No Record Found');
     }
     else if (btncount > currentpage) {
@@ -50,54 +56,24 @@ function filtercount() {
     else {
         $('#datainfo').text('Showing ' + (((currentpage - 1) * pagesize) + 1) + ' - ' + count + ' out of ' + count);
     }
-    var gotodrop = $('#gotodrop');
-    gotodrop.empty();
-    gotodrop.append($('<option>', {
-        value: 1,
-        text: 1
-    }))
-    for (var i = 5; i <= btncount; i = i + 5) {
-        gotodrop.append($('<option>', {
-            value: i,
-            text: i
-        }))
-    }
+
+    gotodrop.attr('max', btncount);
+
+    //var gotodrop = $('#gotodrop');
+    //gotodrop.empty();
+    //gotodrop.append($('<option>', {
+    //    value: 1,
+    //    text: 1
+    //}))
+    //for (var i = 5; i <= btncount; i = i + 5) {
+    //    gotodrop.append($('<option>', {
+    //        value: i,
+    //        text: i
+    //    }))
+    //}
 }
 
-//function filtercount(search) {
-//    $.ajax({
-//        url: '/Home/GetCustomerCount',
-//        data: { search },
-//        type: 'POST',
-//        success: function (res) {
-//            count = res;
-//            btncount = Math.ceil(res / pagesize);
-//            if (btncount == 0) {
-//                if (currentpage != 1) {
-//                    filterdata(search, 1, pagesize)
-//                }
-//            }
-//            else if (btncount > currentpage) {
-//                $('#datainfo').text('Showing ' + (((currentpage - 1) * pagesize) + 1) + ' - ' + (((currentpage) * pagesize)) + ' out of ' + count);
-//            }
-//            else {
-//                $('#datainfo').text('Showing ' + (((currentpage - 1) * pagesize) + 1) + ' - ' + count + ' out of ' + count);
-//            }
-//            var gotodrop = $('#gotodrop');
-//            gotodrop.empty();
-//            gotodrop.append($('<option>', {
-//                value: 1,
-//                text: 1
-//            }))
-//            for (var i = 5; i <= btncount; i = i + 5) {
-//                gotodrop.append($('<option>', {
-//                    value: i,
-//                    text: i
-//                }))
-//            }
-//        }
-//    })
-//}
+
 filterdata(search, currentpage, pagesize, orderbycolumnname, orderby, searchbycolumns)
 
 
@@ -116,6 +92,12 @@ $('#pagesize').on('change', function () {
     filterdata(search, currentpage, pagesize, orderbycolumnname, orderby, searchbycolumns)
 })
 $('#gotodrop').on('change', function () {
+    if ($(this).val() == null || $(this).val() == "") {
+        $(this).val(1);
+    }
+    else if ($(this).val() > btncount) {
+        $(this).val(1);
+    }
     currentpage = $(this).val()
     filterdata(search, currentpage, pagesize, orderbycolumnname, orderby, searchbycolumns)
 })
@@ -160,12 +142,7 @@ $(document).on('dblclick', '.customerrow', function () {
 });
 
 $(document).on('click', '.customerrow', function () {
-    if ($(this).hasClass('selectthisrow')) {
-        $(this).removeClass('selectthisrow');
-    }
-    else {
-        $(this).addClass('selectthisrow');
-    }
+    $(this).toggleClass('selectthisrow')
 });
 
 $('.notselect').on('click', function () {

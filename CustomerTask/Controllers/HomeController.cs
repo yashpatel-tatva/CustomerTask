@@ -24,13 +24,6 @@ namespace CustomerTask.Controllers
             ViewBag.Search = pageFilterDTO.search;
             ViewBag.Currentpage = pageFilterDTO.currentpage;
             ViewBag.PageSize = pageFilterDTO.pagesize;
-            //ViewBag.acsort = pageFilterDTO.acsort;
-            //ViewBag.namesort = pageFilterDTO.namesort;
-            //ViewBag.pcsort = pageFilterDTO.pcsort;
-            //ViewBag.cntrysort = pageFilterDTO.cntrysort;
-            //ViewBag.tpsort = pageFilterDTO.tpsort;
-            //ViewBag.rlsnsort = pageFilterDTO.rlsnsort;
-            //ViewBag.currsort = pageFilterDTO.currsort;
             return View();
         }
 
@@ -39,11 +32,6 @@ namespace CustomerTask.Controllers
             return View("DetailOfCustomer", acno);
         }
 
-        //public int GetCustomerCount(string search)
-        //{
-        //    return _customer.GetCustomerCount(search);
-        //}
-
         public PageFilterResponseDTO<CustomerListViewModel> GetCustomerList(PageFilterRequestDTO<CustomerSearchFilterDTO> pageFilterDTO)
         {
             PageFilterResponseDTO<CustomerListViewModel> model = _customer.GetCustomerList(pageFilterDTO);
@@ -51,12 +39,12 @@ namespace CustomerTask.Controllers
         }
 
         [HttpPost]
-        public IActionResult GetCustomerListView([FromBody]PageFilterRequestDTO<CustomerSearchFilterDTO> pageFilterDTO)
+        public IActionResult GetCustomerListView([FromBody] PageFilterRequestDTO<CustomerSearchFilterDTO> pageFilterDTO)
         {
             PageFilterResponseDTO<CustomerListViewModel> model = GetCustomerList(pageFilterDTO);
             int pagncount = model.TotalPage;
             int totalrecords = model.TotalRecords;
-            return PartialView("ListView" , model);
+            return PartialView("ListView", model);
         }
 
         public List<string> AccountNoDrop()

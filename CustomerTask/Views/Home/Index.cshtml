@@ -31,6 +31,10 @@
     .fa-sort {
         opacity: 50%;
     }
+
+    .gotoinput:focus-visible{
+        outline : none;
+    }
 </style>
 
 
@@ -108,7 +112,7 @@
         </select>
     </div>
     <div>
-        Go To Page: <select id="gotodrop"></select>
+        Go To Page: <input type="number" min="1" id="gotodrop" class="border-0 border-bottom gotoinput" /> out of <label class="fw-bold" id="totalpages"></label>
     </div>
     <div class="d-flex align-items-center rounded-1">
         <div class="paginate_first "><i class="fa-solid fa-forward-fast fa-flip-horizontal"></i></div>

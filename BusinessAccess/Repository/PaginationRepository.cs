@@ -18,29 +18,30 @@ namespace BusinessAccess.Repository
             var searchProperties = typeof(T).GetProperties();
 
             /// searching from key
-            
 
-            //string searchValue  = pageFilterDTO.search?.ToLower();
 
-            //if (!string.IsNullOrEmpty(searchValue))
-            //{
-            //    entity = entity.Where(e =>
-            //    {
-            //        foreach (var entityProperty in searchProperties)
-            //        {
-            //            if ((bool)(entityProperty.GetValue(e)?.ToString().ToLower().Contains(searchValue)))
-            //            {
-            //                return true;
-            //            }
-            //        }
-            //        return false;
-            //    }).ToList();
+            string searchValue = pageFilterDTO.search?.ToLower();
 
-            //    foreach (var entityProperty in searchProperties)
-            //    {
-            //        entity = entity.OrderBy(e => entityProperty.GetValue(e)?.ToString()).ToList();
-            //    }
-            //}
+            List<T> list = new List<T>();
+            if (!string.IsNullOrEmpty(searchValue))
+            {
+                foreach (var entityProperty in searchProperties)
+                {
+                    if (entityProperty.Name == "Id")
+                        continue;
+                    list = list.Union(entity.Where(e => (bool)(entityProperty.GetValue(e)?.ToString().ToLower().Contains(searchValue)))
+                                    .OrderBy(e => entityProperty.GetValue(e)?.ToString().IndexOf(searchValue) ?? int.MaxValue)
+                                    .ThenBy(e => entityProperty.GetValue(e)?.ToString())
+                                    .ToList()).ToList();
+                }
+            }
+            else
+            {
+                list = entity;
+            }
+            entity = list;
+
+
 
 
             /// Searching from filter
