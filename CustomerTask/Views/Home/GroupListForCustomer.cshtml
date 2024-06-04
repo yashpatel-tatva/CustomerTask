@@ -1,0 +1,34 @@
+﻿@model List<Group>
+@foreach (var group in Model)
+{
+    <div class="d-flex justify-content-between">
+        <div>
+            <input type="checkbox" name="groupin" value="@group.Id" 
+            @if (group.Isselect)
+            {
+                @: checked
+            }
+            />
+            @group.Name
+        </div>
+        <div class="d-flex gap-2">
+            <i class="fa-solid fa-pen editthisgroup" data-id="@group.Id" style="color : #920472!important"></i>
+            <i class="fa-solid fa-trash deletethisgroup text-danger" data-id="@group.Id"></i>
+        </div>
+    </div>
+}
+
+<script>
+    $('input[name="groupin"]').on('change' , function(){
+        var groupid = $(this).val();
+        var isselect = $(this).is(":checked");
+        $.ajax({
+            url : '/Home/SelectGroupInCustomer',
+            data : {groupid , isselect},
+            type : 'POST',
+            success : function(){
+                Swal.fire('Add');
+            }
+        })
+    })
+</script>

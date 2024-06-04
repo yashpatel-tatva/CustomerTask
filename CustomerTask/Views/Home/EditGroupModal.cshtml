@@ -1,0 +1,38 @@
+﻿<input type="hidden" value="@Model.Customerid" id="thiscustomerid" />
+<dialog id="editgroupdialog" class="w-25 editgroupdialog p-0 rounded-3">
+    <div class="w-100 d-flex justify-content-between p-2 rounded-3" style="background: linear-gradient(to bottom, #4777ae, #48607b);">
+        <div class="rounded">
+            <button class="rounded border-0 bg-white addgroupbtn" style="color:#48607b">
+                <i class="fa-solid fa-plus"></i>
+            </button>
+        </div>
+        <div>
+            <button class="rounded border-0 bg-white" onclick="clearfilter()"><i class="fa-solid fa-broom"></i></button>
+            <button class="rounded border-0 bg-white" onclick="closeeditmodal()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+    </div>
+    <div class="p-3 ">
+        <div class="form-group rounded">
+            <input type="text" id="groupsearch" class="w-100 p-2 form-control" /><span>Search</span>
+        </div>
+
+        <div><span id="groupnumberinfo"></span></div>
+
+        <div class="my-2 p-2 w-100  d-flex justify-content-between" style="background-color : #e2e3e3">
+            <div class="infoofmodal">Name</div>
+            <div class="savecancel d-none">
+                <button class="rounded border-0 bg-white savesupplier"><i class="fa-regular fa-floppy-disk"></i></button>
+                <button class="rounded border-0 bg-white cancelsupplier"><i class="fa-solid fa-xmark "></i></button>
+            </div>
+        </div>
+        <div class="grouplist p-2">
+            
+        </div>
+        <div class="groupdetail d-none p-2" style="height : 300px !important; overflow-y : scroll;">
+
+        </div>
+    </div>
+</dialog>
+
+
+<script src="~/js/groupmodel.js" asp-append-version="true"></script>

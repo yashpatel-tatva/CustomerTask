@@ -1,5 +1,6 @@
 ﻿using BusinessAccess.Repository.IRepository;
 using DataAccess.DTOs;
+using System.Reflection;
 
 namespace BusinessAccess.Repository
 {
@@ -8,21 +9,21 @@ namespace BusinessAccess.Repository
         public PageFilterResponseDTO<T> GetPagedData(List<T> entity, PageFilterRequestDTO<U> pageFilterDTO)
         {
 
-            PageFilterResponseDTO<T> pageFilterResponseDTO = new PageFilterResponseDTO<T>();
-            pageFilterResponseDTO.TotalColumn = typeof(T).GetProperties().Length;
-            pageFilterResponseDTO.CurrentPage = pageFilterDTO.currentpage;
-            pageFilterResponseDTO.PageSize = pageFilterDTO.pagesize;
-            pageFilterResponseDTO.OrderColumnName = pageFilterDTO.OrderByColumnName;
-            pageFilterResponseDTO.OrderBy = pageFilterDTO.OrderBy;
+            PageFilterResponseDTO<T> pageFilterResponseDTO = new()
+            {
+                TotalColumn = typeof(T).GetProperties().Length,
+                CurrentPage = pageFilterDTO.currentpage,
+                PageSize = pageFilterDTO.pagesize,
+                OrderColumnName = pageFilterDTO.OrderByColumnName,
+                OrderBy = pageFilterDTO.OrderBy
+            };
 
-            var searchProperties = typeof(T).GetProperties();
+            PropertyInfo[] searchProperties = typeof(T).GetProperties();
 
             /// searching from key
+            string? searchValue = pageFilterDTO.search?.ToLower();
 
-
-            string searchValue = pageFilterDTO.search?.ToLower();
-
-            List<T> list = new List<T>();
+            List<T> list = new();
             if (!string.IsNullOrEmpty(searchValue))
             {
                 foreach (var entityProperty in searchProperties)
@@ -69,14 +70,10 @@ namespace BusinessAccess.Repository
                 }
             }
 
-
             /// Info Of Pages
             var pages = (decimal)entity.Count / (decimal)pageFilterDTO.pagesize;
             pageFilterResponseDTO.TotalPage = (int)Math.Ceiling(pages);
-            pageFilterResponseDTO.TotalRecords = entity.Count();
-
-
-
+            pageFilterResponseDTO.TotalRecords = entity.Count;
 
             /// Sorting
             if (pageFilterDTO.OrderByColumnName != null)
@@ -91,14 +88,8 @@ namespace BusinessAccess.Repository
                 }
             }
 
-
-
-
             /// Paging
             entity = entity.Skip((pageFilterDTO.currentpage - 1) * pageFilterDTO.pagesize).Take(pageFilterDTO.pagesize).ToList();
-
-
-
 
             ///Response
             pageFilterResponseDTO.Data = entity;

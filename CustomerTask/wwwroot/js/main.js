@@ -59,7 +59,8 @@ $('.addcustomer').on('click', function () {
         data: { id: 0 },
         success: function (res) {
             $('.popup').html(res)
-            document.getElementById('adddialog').showModal();
+            $('#adddialog').addClass('foradd');
+            document.getElementById('adddialog').show();
         }
     }) 
 })

@@ -1,15 +1,15 @@
 ﻿@{
-    ViewData["Title"] = "Customer:"+Model;
+    ViewData["Title"] = "Customer:" + Model;
 }
 <style>
-    td:nth-child(2n){
-        font-weight:800;
+    td:nth-child(2n) {
+        font-weight: 800;
     }
 </style>
 
 <div class="recorddiv">
     <div class="col-xl-6 border-1" style="border :0.5px solid #6A7179">
-        <div class="w-100 p-1 fw-bold" style="background-color: #F7F9FA ; font-size: 1.25rem"><i class="bi bi-building ps-3"></i> Invoice Address <i class="bi bi-pen-fill editthis " ></i></div>
+        <div class="w-100 p-1 fw-bold" style="background-color: #F7F9FA ; font-size: 1.25rem"><i class="bi bi-building ps-3"></i> Invoice Address <i class="bi bi-pen-fill editthis "></i></div>
         <div class="table-responsive">
             <table class="table ps-3">
                 <tr>
@@ -60,20 +60,41 @@
                     <td>Mailing List</td>
                     <td id="mailinglist"></td>
                 </tr>
+                <tr>
+                    <td>Group</td>
+                    <td class="border-bottom w-50"><button id="OpenGroupDialog" class="btn  border-0" style="background-color : #e2e3e3">Here</button></td>
+                </tr>
             </table>
         </div>
     </div>
 </div>
 <input type="hidden" id="thisid" />
+<div id="editgroupmodel"></div>
+<div id="addgroupmodel"></div>
 
 <style>
-    tr , td {
-        border : none;
+    tr, td {
+        border: none;
     }
+
     td {
-        padding : 0.5rem 0.5rem 0.5rem 3rem !important;
+        padding: 0.5rem 0.5rem 0.5rem 3rem !important;
+    }
+    dialog{
+        border : 2px solid
+    }
+
+    .fa-solid{
+        transition : 0.25s;
+    }
+    .rounded.border-0.bg-white:hover i ,
+    .fa-solid:hover,.bi:hover{
+        transform : scale(1.3)
     }
 </style>
 
+  
+
+
 <script src="https://code.jquery.com/jquery-3.7.1.min.js" asp-append-version="true"></script>
-                    <script src="~/js/site.js" asp-append-version="true"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>

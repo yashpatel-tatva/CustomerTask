@@ -27,7 +27,8 @@ body {
 .paginate_Nextbutton,
 .paginate_Previousbutton,
 .paginate_first,
-.paginate_last {
+.paginate_last,
+.paginate_buttonNaN {
     /*border-radius: 20% !important;*/
     /*margin-left: 7px !important;*/
     padding: 0px !important;
@@ -70,6 +71,25 @@ body {
     background: #303A45 !important;
     color: white !important
 }
+
+.paginate_button.current {
+    background: #303A45 !important;
+    color: #fff !important;
+    border: none;
+}
+
+.paginate_button:last-child.current {
+    border-top-right-radius: 20% !important;
+    border-bottom-right-radius: 20% !important;
+}
+
+.paginate_button:first-child.current {
+    border-top-left-radius: 20% !important;
+    border-bottom-left-radius: 20% !important;
+}
+
+
+
 
 
 .selectthisrow {
@@ -143,7 +163,7 @@ input[type="search"] {
         max-width: 90%;
     }
 
-input:not(:placeholder-shown):not(:focus) + span{
+input:not(:placeholder-shown):not(:focus) + span {
     /* color: inherit; */
     color: darkgray;
     transform: translateX(-3px) translateY(-9px);
@@ -153,7 +173,7 @@ input:not(:placeholder-shown):not(:focus) + span{
 }
 
 input:focus + span,
-input:not(:placeholder-shown) + span     {
+input:not(:placeholder-shown) + span {
     color: #8db2db;
     transform: translateX(-3px) translateY(-9px);
     font-size: 0.75em !important;
@@ -183,17 +203,63 @@ input:not(:placeholder-shown) + span     {
 
 
 
-dialog[open] {
-    -webkit-animation: show 1s ;
+.foradd[open] {
+    -webkit-animation: adddialog-popout 1s ease-in-out;
 }
 
-@-webkit-keyframes show {
-    from {
-        transform: translateX(90%) translateY(-50%) scale(0.1);
+@-webkit-keyframes adddialog-popout {
+    0% {
+        transform: translateX(85%) translateY(-50%) skew(25deg, 10deg) scale(0.1);
+        opacity: 0;
     }
-
-    to {
+    /* 25%{
+        transform:  scaleY(0.5)
+    }*/
+    100% {
         transform: translateX(0%) translateY(0%) scale(1);
+        opacity: 1;
     }
 }
+
+.foredit[open] {
+    -webkit-animation: editdialog 1s ease-in-out;
+}
+
+@-webkit-keyframes editdialog {
+    0% {
+        transform: translateX(-70%) translateY(-40%) skew(25deg, 10deg) scale(0.1);
+        opacity: 0;
+    }
+    /*    70% {
+        transform: scaleY(0.3) skew(25deg, 10deg);
+    }
+*/
+    100% {
+        transform: translateX(0%) translateY(0%) scale(1) skew(0,0);
+        opacity: 1;
+    }
+}
+
+
+.editgroupdialog[open] {
+    transform: translateY(-100%);
+}
+
+.addgroupdialog[open] {
+    -webkit-animation: addgroupdialog 1s ease-in-out;
+}
+
+@-webkit-keyframes addgroupdialog {
+    0% {    
+        transform: scale(0.1);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translate(110%, -250%);
+        opacity: 1;
+    }
+}
+
+
 

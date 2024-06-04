@@ -15,9 +15,17 @@ namespace BusinessAccess.Repository.IRepository
         void Editthis(Customer model);
         List<string> GetAllAcoountNumber();
         PageFilterResponseDTO<CustomerListViewModel> GetCustomerList(PageFilterRequestDTO<CustomerSearchFilterDTO> pageFilterDTO);
-        Customer GetInfoOfAC(string acno);
-        Customer GetInfoOfId(int id);
+        Customer? GetInfoOfAC(string acno);
+        Customer? GetInfoOfId(int id);
 
         List<CustomerListViewModel> GetCustomerViewList(List<Customer> customertable);
+        List<Group> CustomerGroupDetail(int id, string search);
+
+        List<Group> AllGroups();
+        bool AddGroupInCustomer(int customerid, int groupid, string group);
+        void DeleteGroupFromCustomer(int customerid, int groupid);
+        List<Supplier> GetSupplierOfGroup(int groupid, string search);
+
+        List<Supplier> GetNullSupplier(string search);
     }
 }

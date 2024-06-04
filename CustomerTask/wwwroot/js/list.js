@@ -39,16 +39,17 @@ function filterdata(search, currentpage, pagesize, orderbycolumnname, orderby, s
 
 function filtercount() {
     count = $('#totalrecords').val();
+    printbuttons(count)
     btncount = Math.ceil(count / pagesize);
     $('#totalpages').text(btncount);
-    if (btncount < currentpage) {
+    if (btncount == 0) {
+        $('#datainfo').text('No Record Found');
+    }
+    else if (btncount < currentpage) {
         if (currentpage != 1) {
             currentpage = 1;
             filterdata(search, currentpage, pagesize)
         }
-    }
-    else if (btncount == 0) {
-        $('#datainfo').text('No Record Found');
     }
     else if (btncount > currentpage) {
         $('#datainfo').text('Showing ' + (((currentpage - 1) * pagesize) + 1) + ' - ' + (((currentpage) * pagesize)) + ' out of ' + count);
@@ -102,7 +103,10 @@ $('#gotodrop').on('change', function () {
     filterdata(search, currentpage, pagesize, orderbycolumnname, orderby, searchbycolumns)
 })
 
-
+$('.dataTables_paginate').on('click', '.paginate_button', function () {
+    currentpage = $(this).data('id');
+    filterdata(search, currentpage, pagesize, orderbycolumnname, orderby, searchbycolumns)
+});
 
 $('.paginate_Previousbutton').on('click', function () {
     if (currentpage > 1) {
@@ -202,183 +206,78 @@ function searchbyfilter() {
         Relationship: relationship,
         currency: currency
     }
-
+    orderbycolumnname = null;
+    $('.notselect').find('i').removeClass('fa-sort-up fa-sort-down');
+    $('.notselect').find('i').addClass('fa-sort');
     currentpage = 1;
     filterdata(search, currentpage, pagesize, orderbycolumnname, orderby, searchbycolumns);
 
 }
 
-//$('#acsortth').on('click', function () {
-//    removeothersortingthanthis($(this).id)
-//    switch (acsort) {
-//        case 0:
-//            acsort = 1;
-//            $('#acsorticn').removeClass("bi-arrow-down bi-arrow-right").addClass("bi-arrow-up");
-//            break;
-//        case 1:
-//            acsort = 2;
-
-//            $('#acsorticn').removeClass("bi-arrow-up bi-arrow-right").addClass("bi-arrow-down");
-//            break;
-//        default:
-//            acsort = 0;
-
-//            $('#acsorticn').removeClass("bi-arrow-up bi-arrow-down").addClass("bi-arrow-right");
-//    }
-
-//});
-
-//$('#namesortth').on('click', function () {
-//    removeothersortingthanthis($(this).id)
-//    switch (namesort) {
-//        case 0:
-//            namesort = 1;
-
-//            $('#namesorticn').removeClass("bi-arrow-down bi-arrow-right").addClass("bi-arrow-up");
-//            break;
-//        case 1:
-//            namesort = 2;
-
-//            $('#namesorticn').removeClass("bi-arrow-up bi-arrow-right").addClass("bi-arrow-down");
-//            break;
-//        default:
-//            namesort = 0;
-
-//            $('#namesorticn').removeClass("bi-arrow-up bi-arrow-down").addClass("bi-arrow-right");
-//    }
-
-//});
-
-//$('#pcsortth').on('click', function () {
-//    removeothersortingthanthis($(this).id)
-//    switch (pcsort) {
-//        case 0:
-//            pcsort = 1;
-
-//            $('#pcsorticn').removeClass("bi-arrow-down bi-arrow-right").addClass("bi-arrow-up");
-//            break;
-//        case 1:
-//            pcsort = 2;
-
-//            $('#pcsorticn').removeClass("bi-arrow-up bi-arrow-right").addClass("bi-arrow-down");
-//            break;
-//        default:
-//            pcsort = 0;
-
-//            $('#pcsorticn').removeClass("bi-arrow-up bi-arrow-down").addClass("bi-arrow-right");
-//    }
-
-//});
-
-//$('#cntrysortth').on('click', function () {
-//    removeothersortingthanthis($(this).id)
-//    switch (cntrysort) {
-//        case 0:
-//            cntrysort = 1;
-
-//            $('#cntrysorticn').removeClass("bi-arrow-down bi-arrow-right").addClass("bi-arrow-up");
-//            break;
-//        case 1:
-//            cntrysort = 2;
-
-//            $('#cntrysorticn').removeClass("bi-arrow-up bi-arrow-right").addClass("bi-arrow-down");
-//            break;
-//        default:
-//            cntrysort = 0;
-
-//            $('#cntrysorticn').removeClass("bi-arrow-up bi-arrow-down").addClass("bi-arrow-right");
-//    }
-
-//});
-
-//$('#tpsortth').on('click', function () {
-//    removeothersortingthanthis($(this).id)
-//    switch (tpsort) {
-//        case 0:
-//            tpsort = 1;
-
-//            $('#tpsorticn').removeClass("bi-arrow-down bi-arrow-right").addClass("bi-arrow-up");
-//            break;
-//        case 1:
-//            tpsort = 2;
-
-//            $('#tpsorticn').removeClass("bi-arrow-up bi-arrow-right").addClass("bi-arrow-down");
-//            break;
-//        default:
-//            tpsort = 0;
-
-//            $('#tpsorticn').removeClass("bi-arrow-up bi-arrow-down").addClass("bi-arrow-right");
-//    }
-
-//});
-
-//$('#rlsnsortth').on('click', function () {
-//    removeothersortingthanthis($(this).id)
-//    switch (rlsnsort) {
-//        case 0:
-//            rlsnsort = 1;
-
-//            $('#rlsnsorticn').removeClass("bi-arrow-down bi-arrow-right").addClass("bi-arrow-up");
-//            break;
-//        case 1:
-//            rlsnsort = 2;
-
-//            $('#rlsnsorticn').removeClass("bi-arrow-up bi-arrow-right").addClass("bi-arrow-down");
-//            break;
-//        default:
-//            rlsnsort = 0;
-
-//            $('#rlsnsorticn').removeClass("bi-arrow-up bi-arrow-down").addClass("bi-arrow-right");
-//    }
-
-//});
-
-//$('#currsortth').on('click', function () {
-//    removeothersortingthanthis($(this).id)
-//    switch (currsort) {
-//        case 0:
-//            currsort = 1;
-
-//            $('#currsorticn').removeClass("bi-arrow-down bi-arrow-right").addClass("bi-arrow-up");
-//            break;
-//        case 1:
-//            currsort = 2;
-
-//            $('#currsorticn').removeClass("bi-arrow-up bi-arrow-right").addClass("bi-arrow-down");
-//            break;
-//        default:
-//            currsort = 0;
-
-//            $('#currsorticn').removeClass("bi-arrow-up bi-arrow-down").addClass("bi-arrow-right");
-//    }
-
-//});
 
 
 
-//function removeothersortingthanthis(id) {
-//    $('.bi').removeClass("bi-arrow-up bi-arrow-down").addClass("bi-arrow-right")
-//    switch (id) {
-//        case "acsortth":
-//            namesort = 0; pcsort = 0; cntrysort = 0; tpsort = 0; rlsnsort = 0; currsort = 0;
-//            break;
-//        case "namesortth":
-//            acsort = 0; pcsort = 0; cntrysort = 0; tpsort = 0; rlsnsort = 0; currsort = 0;
-//            break;
-//        case "pcsortth":
-//            acsort = 0; namesort = 0; cntrysort = 0; tpsort = 0; rlsnsort = 0; currsort = 0;
-//            break;
-//        case "cntrysortth":
-//            acsort = 0; namesort = 0; pcsort = 0; tpsort = 0; rlsnsort = 0; currsort = 0;
-//            break;
-//        case "tpsortth":
-//            acsort = 0; namesort = 0; pcsort = 0; cntrysort = 0; rlsnsort = 0; currsort = 0;
-//            break;
-//        case "rlsnsortth":
-//            acsort = 0; namesort = 0; pcsort = 0; cntrysort = 0; tpsort = 0; currsort = 0;
-//            break;
-//        case "currsortth":
-//            acsort = 0; namesort = 0; pcsort = 0; cntrysort = 0; tpsort = 0; rlsnsort = 0;
-//            break;
-//    }
-//}
+
+function printbuttons(data) {
+    buttoncount = Math.ceil(data / pagesize);
+    $('.dataTables_paginate').html("");
+    var btn = Math.min(5, buttoncount);
+    var j = currentpage;
+    if (buttoncount == 0) {
+        $('.dataTables_paginate').html("No Records Found");
+    }
+    else if (buttoncount <= 5) {
+        for (var i = 1; i <= btn; i++) {
+            $('.dataTables_paginate').append('<div class="paginate_button" data-id="' + i + '">' + i + '</div > ');
+        }
+    }
+    else {
+        if (currentpage >= buttoncount - 3) {
+            $('.dataTables_paginate').append('<div class="paginate_button" data-id="' + 1 + '">' + 1 + '</div > ');
+            $('.dataTables_paginate').append('<div class="paginate_buttonNaN" data-id="' + '...' + '">' + '...' + '</div > ');
+            $('.dataTables_paginate').append('<div class="paginate_button" data-id="' + (buttoncount - 3) + '">' + (buttoncount - 3) + '</div > ');
+            $('.dataTables_paginate').append('<div class="paginate_button" data-id="' + (buttoncount - 2) + '">' + (buttoncount - 2) + '</div > ');
+            $('.dataTables_paginate').append('<div class="paginate_button" data-id="' + (buttoncount - 1) + '">' + (buttoncount - 1) + '</div > ');
+            $('.dataTables_paginate').append('<div class="paginate_button" data-id="' + buttoncount + '">' + buttoncount + '</div > ');
+        }
+        else if (currentpage < 4) {
+            $('.dataTables_paginate').append('<div class="paginate_button" data-id="' + 1 + '">' + 1 + '</div > ');
+            $('.dataTables_paginate').append('<div class="paginate_button" data-id="' + 2 + '">' + 2 + '</div > ');
+            $('.dataTables_paginate').append('<div class="paginate_button" data-id="' + 3 + '">' + 3 + '</div > ');
+            $('.dataTables_paginate').append('<div class="paginate_button" data-id="' + 4 + '">' + 4 + '</div > ');
+            $('.dataTables_paginate').append('<div class="paginate_buttonNaN" >' + '...' + '</div > ');
+            $('.dataTables_paginate').append('<div class="paginate_button" data-id="' + buttoncount + '">' + buttoncount + '</div > ');
+        }
+        else {
+            $('.dataTables_paginate').append('<div class="paginate_button" data-id="' + 1 + '">' + 1 + '</div > ');
+            $('.dataTables_paginate').append('<div class="paginate_buttonNaN" data-id="' + '...' + '">' + '...' + '</div > ');
+            $('.dataTables_paginate').append('<div class="paginate_button" data-id="' + (currentpage - 1) + '">' + (currentpage - 1) + '</div > ');
+            $('.dataTables_paginate').append('<div class="paginate_button" data-id="' + currentpage + '">' + currentpage + '</div > ');
+            $('.dataTables_paginate').append('<div class="paginate_button" data-id="' + (currentpage + 1) + '">' + (currentpage + 1) + '</div > ');
+            $('.dataTables_paginate').append('<div class="paginate_buttonNaN" data-id="' + '...' + '">' + '...' + '</div > ');
+            $('.dataTables_paginate').append('<div class="paginate_button" data-id="' + buttoncount + '">' + buttoncount + '</div > ');
+        }
+    }
+    if (currentpage == 1) {
+        $('.paginate_Previousbutton').addClass("d-none");
+        $('.paginate_first').addClass("d-none");
+    }
+    else {
+        $('.paginate_Previousbutton').removeClass("d-none");
+        $('.paginate_first').removeClass("d-none");
+    }
+    if (buttoncount == currentpage) {
+        $('.paginate_Nextbutton').addClass("d-none");
+        $('.paginate_last').addClass("d-none");
+    }
+    else {
+        $('.paginate_Nextbutton').removeClass("d-none");
+        $('.paginate_last').removeClass("d-none");
+    }
+
+
+
+    $('.paginate_button').removeClass("current");
+    $('.paginate_button[data-id="' + currentpage + '"]').addClass("current");
+
+}

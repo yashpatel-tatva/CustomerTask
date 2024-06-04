@@ -3,11 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33723.286
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomerTask", "CustomerTask.csproj", "{6D21A03C-7842-4AE2-AB8C-1B9491B27F31}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomerTask", "CustomerTask.csproj", "{6D21A03C-7842-4AE2-AB8C-1B9491B27F31}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess", "..\DataAccess\DataAccess.csproj", "{741D41FB-8E7B-4378-B88E-DF4677742108}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccess", "..\DataAccess\DataAccess.csproj", "{741D41FB-8E7B-4378-B88E-DF4677742108}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessAccess", "..\BusinessAccess\BusinessAccess.csproj", "{7CFADC7A-717C-4F03-995A-055E1F19E6A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BusinessAccess", "..\BusinessAccess\BusinessAccess.csproj", "{7CFADC7A-717C-4F03-995A-055E1F19E6A7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{71A1CF9B-CABB-4BF3-9E68-408AC07CB858}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

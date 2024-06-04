@@ -1,0 +1,52 @@
+﻿@model DataAccess.DataViewModel.CustomerGroupViewModel
+<dialog id="addgroupdialog" class="w-25 addgroupdialog p-0" style="transform: translate(110%, -250%) ">
+    <input type="hidden" value="@Model.CustomerId" id="thiscustomeridinadd" />
+    <input type="hidden" value="@Model.GroupId" id="thisgroupinadd" />
+
+    <div class="w-100 d-flex justify-content-between p-2" style="background: linear-gradient(to bottom, #4777ae, #48607b);">
+        <div class="rounded text-white">
+            Add Group
+        </div>
+        <div>
+            <button class="rounded border-0 bg-white" onclick="document.getElementById('addgroupdialog').close()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+    </div>
+    <div class="p-4">
+        <div class="d-flex gap-3">
+            <span>Name</span>
+            <input type="text" id="groupname" list="groups" class="border-0 border-bottom" value="@Model.GroupName" autocomplete="off"/>
+            <datalist id="groups">
+               @* @foreach (var group in Model.Groups)
+                {
+                    <option>@group.Name</option>
+                }*@
+            </datalist>
+        </div>
+    </div>
+    <div class="p-4">
+        <div class="d-flex justify-content-end gap-3">
+            <button class="bg-success border-0 px-3 text-white rounded-pill addthisgroup">Save</button>
+            <button class="bg-light border-0 px-3 rounded-pill text-secondary" onclick="document.getElementById('addgroupdialog').close()">Cancel</button>
+        </div>
+    </div>
+</dialog>
+
+
+<script>
+    $('.addthisgroup').on('click', function () {
+        var customerid = $('#thiscustomeridinadd').val();
+        var groupid = $('#thisgroupinadd').val();
+        var group = $('#groupname').val();
+        console.log(customerid , groupid , group)
+        $.ajax({
+            url : '/Home/AddGroupInCustomer',
+            data : {customerid , groupid , group},
+            type : 'POST',
+            success : function(res){
+                $('#editgroupmodel').html(res);
+                document.getElementById('editgroupdialog').show();
+                document.getElementById('addgroupdialog').close()
+            }
+        })
+    })
+</script>

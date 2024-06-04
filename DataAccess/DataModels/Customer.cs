@@ -1,5 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace CustomerTask;
 
@@ -50,4 +53,10 @@ public partial class Customer
 
     [Key]
     public int Id { get; set; }
+
+    [InverseProperty("Customer")]
+    public virtual ICollection<Group> Groups { get; set; } = new List<Group>();
+
+    [InverseProperty("Customer")]
+    public virtual ICollection<Mapping> Mappings { get; set; } = new List<Mapping>();
 }

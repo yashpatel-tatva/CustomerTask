@@ -50,7 +50,22 @@ $('.editthis').on('click', function () {
         data: { id },
         success: function (res) {
             $('.popup').html(res)
-            document.getElementById('adddialog').showModal();
+            $('#adddialog').addClass('foredit');
+            document.getElementById('adddialog').show();
+        }
+    })
+})
+
+
+$('#OpenGroupDialog').on('click', function () {
+    var id = $('#thisid').val();
+    $.ajax({
+        url: '/Home/OpenGroupModal',
+        data: { id },
+        type: 'POST',
+        success: function (res) {
+            $('#editgroupmodel').html(res);
+            document.getElementById('editgroupdialog').show();
         }
     })
 })
