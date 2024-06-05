@@ -44,7 +44,10 @@
             type : 'POST',
             success : function(res){
                 $('#editgroupmodel').html(res);
-                document.getElementById('editgroupdialog').show();
+                Toast.fire({
+                    icon: "success",
+                    title: "Group Information saved"
+                });
                 document.getElementById('addgroupdialog').close()
             }
         })

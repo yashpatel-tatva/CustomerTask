@@ -2,21 +2,23 @@
 var search = $('#groupsearch').val();
 getgroups(customerid, search);
 
+
 $('.addgroupbtn').on('click', function () {
     var customerid = $('#thisid').val();
     var groupid = 0;
     $.ajax({
         url: '/Home/AddGroupModal',
-        data: { customerid , groupid},
+        data: { customerid, groupid },
         type: 'POST',
         success: function (res) {
             $('#addgroupmodel').html(res)
             document.getElementById('addgroupdialog').show();
+
         }
     })
 })
 
-$(document).on('click' , '.deletethisgroup', function () {
+$(document).on('click', '.deletethisgroup', function () {
     var customerid = $('#thiscustomerid').val();
     var groupid = $(this).data('id');
     $.ajax({
@@ -25,12 +27,15 @@ $(document).on('click' , '.deletethisgroup', function () {
         type: 'POST',
         success: function (res) {
             $('#editgroupmodel').html(res);
-            document.getElementById('editgroupdialog').show();
+            Toast.fire({
+                icon: "success",
+                title: "Group Removed"
+            });            putdata(acno)
         }
     })
 })
 
-$(document).on('click','.editthisgroup', function () {
+$(document).on('click', '.editthisgroup', function () {
     var customerid = $('#thisid').val();
     var groupid = $(this).data('id');
     $.ajax({
@@ -39,7 +44,7 @@ $(document).on('click','.editthisgroup', function () {
         type: 'POST',
         success: function (res) {
             $('#addgroupmodel').html(res)
-            document.getElementById('addgroupdialog').show();
+            document.getElementById('addgroupdialog').show(); putdata(acno)
         }
     })
 })
@@ -82,12 +87,12 @@ $('.savesupplier').on('click', function () {
 function closeeditmodal() {
     var adddialog = document.getElementById('addgroupdialog');
     if (adddialog == null) {
-        document.getElementById('editgroupdialog').close();
+        document.getElementById('editgroupdialog').remove();
     }
     else if (adddialog.open) {
         adddialog.classList.add('border-danger');
     } else {
-        document.getElementById('editgroupdialog').close();
+        document.getElementById('editgroupdialog').remove();
     }
 }
 
@@ -138,8 +143,61 @@ function clearfilter() {
         data: { customerid },
         type: 'POST',
         success: function () {
-            Swal.fire('Done');
+            Toast.fire({
+                icon: "success",
+                title: "All Removed from selection"
+            });
+            $('#OpenGroupDialog').text("No Selected");
         }
     })
 }
-            
+$(document).on('change', 'input[name="groupin"]', function () {
+    //console.log("her");
+    var groupid = $(this).val();
+    var gname = $(this).data('name')
+    var isselect = $(this).is(":checked");
+    $.ajax({
+        url: '/Home/SelectGroupInCustomer',
+        data: { groupid, isselect },
+        type: 'POST',
+        success: function () {
+            if (isselect) {
+                Toast.fire({
+                    icon: "success",
+                    title: gname + " Add in selection"
+                });
+            }
+            else {
+                Toast.fire({
+                    icon: "success",
+                    title: gname + " Removed from selection"
+                });
+            }
+            var c = $(document).find('input[name="groupin"]:checked').length;
+            var n = c - 1;
+            var grname = $(document).find('input[name="groupin"]:checked').data('name')
+            if (c == 0) {
+                $('#OpenGroupDialog').text("No Selected");
+            }
+            else if (c == 1) {
+                $('#OpenGroupDialog').text(grname);
+            }
+            else {
+                $('#OpenGroupDialog').text(grname + " + " + n + " more....");
+            }
+        }
+    })
+})
+
+
+var Toast = Swal.mixin({
+    toast: true,
+    position: "top-end",
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
+    }
+});

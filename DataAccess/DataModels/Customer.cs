@@ -10,7 +10,7 @@ namespace CustomerTask;
 public partial class Customer
 {
     [Column("name", TypeName = "character varying")]
-    public string? Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
     [Column("postcode", TypeName = "character varying")]
     public string? Postcode { get; set; }
@@ -53,6 +53,9 @@ public partial class Customer
 
     [Key]
     public int Id { get; set; }
+
+    [InverseProperty("Customer")]
+    public virtual ICollection<Contact> Contacts { get; set; } = new List<Contact>();
 
     [InverseProperty("Customer")]
     public virtual ICollection<Group> Groups { get; set; } = new List<Group>();

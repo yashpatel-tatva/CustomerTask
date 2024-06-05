@@ -241,9 +241,9 @@ input:not(:placeholder-shown) + span {
 }
 
 
-.editgroupdialog[open] {
+/*.editgroupdialog[open] {
     transform: translateY(-100%);
-}
+}*/
 
 .addgroupdialog[open] {
     -webkit-animation: addgroupdialog 1s ease-in-out;

@@ -32,7 +32,7 @@ namespace CustomerTask.Controllers
 
         public IActionResult DetailOfCustomer(string acno)
         {
-            return View("DetailOfCustomer", acno);
+            return View("DetailOfCustomer", _customer.GetGroupCountandName(acno));
         }
 
         public PageFilterResponseDTO<CustomerListViewModel> GetCustomerList(PageFilterRequestDTO<CustomerSearchFilterDTO> pageFilterDTO)
@@ -144,6 +144,7 @@ namespace CustomerTask.Controllers
 
         public IActionResult OpenGroupModal(int id)
         {
+
             return PartialView("EditGroupModal", new { Customerid = id });
         }
 
@@ -206,6 +207,25 @@ namespace CustomerTask.Controllers
         }
 
 
+        public int AddThisContact(Contact contact)
+        {
+            return _customer.AddThisContact(contact);
+        }
+
+        public Contact GetContactDataById(int contactid)
+        {
+            return _customer.GetContactDataById(contactid);
+        }
+
+        public IActionResult GetContactListOfCustomer(int CustomerId, string search)
+        {
+            List<Contact> model = _customer.GetContactListOfCustomer(CustomerId , search);
+            return PartialView("ContactListForCustomer", model);
+        }
+        public void DeletthisContact(int contactid)
+        {
+            _customer.DeletthisContact(contactid);
+        }
 
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

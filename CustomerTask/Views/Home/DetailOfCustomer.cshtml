@@ -1,5 +1,20 @@
-﻿@{
+﻿@using DataAccess.DataViewModel;
+@{
     ViewData["Title"] = "Customer:" + Model;
+}
+@model CustomerGroupViewModel
+@{
+    Contact nullcontact = new Contact
+            {
+                Id = 0,
+                Name = "",
+                Username = "",
+                Telephone = "",
+                Email = "",
+                MailingList = "",
+                Isdelete = false,
+            };
+    Contact firstcontact = Model.Contacts.FirstOrDefault() ?? nullcontact;
 }
 <style>
     td:nth-child(2n) {
@@ -7,69 +22,192 @@
     }
 </style>
 
-<div class="recorddiv">
-    <div class="col-xl-6 border-1" style="border :0.5px solid #6A7179">
-        <div class="w-100 p-1 fw-bold" style="background-color: #F7F9FA ; font-size: 1.25rem"><i class="bi bi-building ps-3"></i> Invoice Address <i class="bi bi-pen-fill editthis "></i></div>
-        <div class="table-responsive">
-            <table class="table ps-3">
-                <tr>
-                    <td>Code</td>
-                    <td>
-                        <select id="acdrop" disabled style="border:none">
-                            <option selected hidden value="@Model">@Model</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Company</td>
-                    <td id="company"></td>
-                </tr>
-                <tr>
-                    <td>Address1</td>
-                    <td id="address1"></td>
-                </tr>
-                <tr>
-                    <td>Address2</td>
-                    <td id="address2"></td>
-                </tr>
-                <tr>
-                    <td>Town</td>
-                    <td id="town"></td>
-                </tr>
-                <tr>
-                    <td>County</td>
-                    <td id="county"></td>
-                </tr>
-                <tr>
-                    <td>Postcode</td>
-                    <td id="postcode"></td>
-                </tr>
-                <tr>
-                    <td>Country</td>
-                    <td id="country"></td>
-                </tr>
-                <tr>
-                    <td>Telephone</td>
-                    <td id="telephone"></td>
-                </tr>
-                <tr>
-                    <td>Email</td>
-                    <td id="email"></td>
-                </tr>
-                <tr>
-                    <td>Mailing List</td>
-                    <td id="mailinglist"></td>
-                </tr>
-                <tr>
-                    <td>Group</td>
-                    <td class="border-bottom w-50"><button id="OpenGroupDialog" class="btn  border-0" style="background-color : #e2e3e3">Here</button></td>
-                </tr>
-            </table>
+@if (Model.CustomerId != 0)
+{
+    <div class="recorddiv d-flex gap-2">
+        <div class="col-xl-6 border-1" style="border :0.5px solid #6A7179">
+            <div class="w-100 p-1 fw-bold" style="background-color: #F7F9FA ; font-size: 1.25rem"><i class="bi bi-building ps-3"></i> Invoice Address <i class="bi bi-pen-fill editthis "></i></div>
+            <div class="">
+                <table class="table ps-3">
+                    <tr>
+                        <td>Code</td>
+                        <td>
+                            <select id="acdrop" readonly style="border:none">
+                                <option selected hidden value="@Model.Ac">@Model.Ac</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Company</td>
+                        <td id="company"></td>
+                    </tr>
+                    <tr>
+                        <td>Address1</td>
+                        <td id="address1"></td>
+                    </tr>
+                    <tr>
+                        <td>Address2</td>
+                        <td id="address2"></td>
+                    </tr>
+                    <tr>
+                        <td>Town</td>
+                        <td id="town"></td>
+                    </tr>
+                    <tr>
+                        <td>County</td>
+                        <td id="county"></td>
+                    </tr>
+                    <tr>
+                        <td>Postcode</td>
+                        <td id="postcode"></td>
+                    </tr>
+                    <tr>
+                        <td>Country</td>
+                        <td id="country"></td>
+                    </tr>
+                    <tr>
+                        <td>Telephone</td>
+                        <td id="telephone"></td>
+                    </tr>
+                    <tr>
+                        <td>Email</td>
+                        <td id="email"></td>
+                    </tr>
+                    <tr>
+                        <td>Mailing List</td>
+                        <td id="mailinglist"></td>
+                    </tr>
+                    <tr>
+                        <td>Group</td>
+                        <td class="border-bottom w-50">
+                            <button id="OpenGroupDialog" class="btn  border-0" style="background-color : #e2e3e3">
+                                @if (Model.TotalSelectedGroup == 0)
+                                {
+                                    @: No Selected
+                                }
+                                else if (Model.TotalSelectedGroup == 1)
+                                {
+                                    <strong>@Model.GroupName</strong>
+                                }
+                                else
+                                {
+                                    var c = Model.TotalSelectedGroup - 1;
+                                    <span><strong>@Model.GroupName</strong> + @c more......</span>
+                                }
+                            </button>
+                            <div class="position-relative mt-1" id="editgroupmodel" style="z-index : 1"></div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="col-xl-6 border-1" style="border :0.5px solid #6A7179">
+            <div class="w-100 p-1 fw-bold" style="background-color: #F7F9FA ; font-size: 1.25rem"><i class="fa-solid fa-address-book"></i> Contact Information <i class="fa-solid fa-pencil editcontact"></i></div>
+            <div class="table-responsive" style="height:90%">
+                <input type="hidden" id="firstcontactid" value="@firstcontact.Id" />
+                <input type="hidden" id="contactid" value="@firstcontact.Id" />
+                <table class="table ps-3">
+                    <tr>
+                        <td>Full Name</td>
+                        <td>
+                            <div class="position-relative">
+                                <span class=""><input id="fullname" class="border-bottom border-secondary disable" value="@firstcontact.Name" readonly /></span>
+                                <div class="position-absolute d-none w-50 bg-white" id="contactsdrop">
+                                    <div class="border border-2 rounded-2">
+                                        <div class="w-100 d-flex justify-content-between p-2 rounded-2" style="background: linear-gradient(to bottom, #4777ae, #48607b);">
+                                            <div class="rounded">
+                                                <button class="rounded border-0 bg-white addcontactbtn" style="color:#48607b" onclick="openedit(0)">
+                                                    <i class="fa-solid fa-plus"></i>
+                                                </button>
+                                            </div>
+                                            <div>
+                                                <button class="rounded border-0 bg-white" onclick="document.getElementById('contactsdrop').classList.add('d-none')"><i class="fa-solid fa-xmark"></i></button>
+                                            </div>
+                                        </div>
+                                        <div class="p-3 ">
+                                            <div class="form-group rounded">
+                                                <input type="text" id="contactsearch" class="w-100 p-2 form-control" /><span>Search</span>
+                                            </div>
+
+                                            <div><span id="contactnumberinfo"></span></div>
+
+                                            <div class="my-2 p-2 w-100  d-flex justify-content-between" style="background-color : #e2e3e3">
+                                                <div class="">Name</div>
+                                            </div>
+                                            <div class="contactlist p-2">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>"Dear" <span id="fullnamespan">@firstcontact.Name</span></td>
+                        <td><span class=""><input id="username" class="border-bottom border-secondary disable" value="@firstcontact.Username" readonly /></span></td>
+                    </tr>
+                    <tr>
+                        <td>Telephone</td>
+                        <td><span class=""><input id="contacttelephone" class="border-bottom border-secondary disable" value="@firstcontact.Telephone" readonly /></span></td>
+                    </tr>
+                    <tr>
+                        <td>Email</td>
+                        <td><span class=""><input id="contactemail" class="border-bottom border-secondary disable" value="@firstcontact.Email" readonly /></span></td>
+                    </tr>
+                    <tr>
+                        <td>Mailing List</td>
+                        <td>
+                            <div class="position-relative">
+                                <span class=""><input id="issubscribeornot" class="border-bottom border-secondary disable readonly" value="@firstcontact.MailingList" readonly /></span>
+                                <div class="position-absolute d-none w-50" id="maillistdrop">
+                                    <div class="border border-2 rounded-2">
+                                        <div class="w-100 d-flex justify-content-between p-2 rounded-2" style="background: linear-gradient(to bottom, #4777ae, #48607b);">
+                                            <div class="text-white">
+                                                Mailing List
+                                            </div>
+                                            <div>
+                                                <button class="rounded border-0 bg-white" id="closemaillist" onclick="document.getElementById('maillistdrop').classList.add('d-none')"><i class="fa-solid fa-xmark"></i></button>
+                                            </div>
+                                        </div>
+                                        <div class="p-2">
+
+                                            <div class="d-flex gap-3">
+                                                <input type="checkbox" name="issubscribe" value="Subscribed"
+                                                @if (firstcontact.MailingList == "Subscribed")
+                                                {
+                                                    @: checked
+                                                } /> Subscribe
+                                            </div>
+                                            <div class="d-flex gap-3">
+                                                <input type="checkbox" name="issubscribe" value="Unsubscribed"
+                                                @if (firstcontact.MailingList == "Unsubscribed")
+                                                {
+                                                    @: checked
+                                                } /> Unsubscribe
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="savecancelcontact d-none">
+                        <td></td>
+                        <td>
+                            <div>
+                                <div class="d-flex justify-content-start gap-3">
+                                    <button class="bg-success border-0 px-3 text-white rounded-pill addthiscontact">Save</button>
+                                    <button class="bg-light border-0 px-3 rounded-pill text-secondary" onclick="closeedit()">Cancel</button>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
         </div>
     </div>
-</div>
+}
 <input type="hidden" id="thisid" />
-<div id="editgroupmodel"></div>
 <div id="addgroupmodel"></div>
 
 <style>
@@ -77,23 +215,42 @@
         border: none;
     }
 
-    td {
-        padding: 0.5rem 0.5rem 0.5rem 3rem !important;
-    }
-    dialog{
-        border : 2px solid
+        td:first-child {
+            width: 25%;
+            padding: 0.5rem 0.5rem 0.5rem 3rem !important;
+        }
+
+    dialog {
+        border: 2px solid
     }
 
-    .fa-solid{
-        transition : 0.25s;
+    .fa-solid {
+        transition: 0.25s;
     }
-    .rounded.border-0.bg-white:hover i ,
-    .fa-solid:hover,.bi:hover{
-        transform : scale(1.3)
+
+        .rounded.border-0.bg-white:hover i,
+        .fa-solid:hover, .bi:hover {
+            transform: scale(1.3)
+        }
+
+    input {
+        border: none !important;
+    }
+
+        input:focus-visible {
+            outline: none
+        }
+
+    .borderbottom {
+        border-bottom: 5px solid !important;
+    }
+
+    .position-absolute {
+        z-index: 1;
     }
 </style>
 
-  
+
 
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js" asp-append-version="true"></script>

@@ -4,6 +4,9 @@ using DataAccess.DataViewModel;
 using DataAccess.DTOs;
 using DataAccess.Repository;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.Contracts;
+using System.Xml.Linq;
+using Group = CustomerTask.Group;
 
 namespace BusinessAccess.Repository
 {
@@ -36,22 +39,17 @@ namespace BusinessAccess.Repository
 
         public void DeleteCustomer(string acno)
         {
-            Customer? cust = _db.Customers.FirstOrDefault(x => x.Ac == acno);
-            cust.Isdelete = true;
-
-            //_db.Customers.Update(cust);
-
-            _db.SaveChanges();
+            Customer cust = _db.Customers.FirstOrDefault(x => x.Ac == acno) ?? new Customer();
+            if (cust.Id != 0)
+            {
+                cust.Isdelete = true;
+                _db.SaveChanges();
+            }
         }
 
         public void DeleteCustomerlist(List<int> ids)
         {
-            var custs = _db.Customers.Where(x => ids.Contains(x.Id) && (x.Isdelete == false)).ToList();
-            custs.ForEach(x =>
-            {
-                x.Isdelete = true;
-            });
-
+             _db.Customers.Where(x => ids.Contains(x.Id) && (x.Isdelete == false)).ToList().ForEach(x => { x.Isdelete = true; });
             _db.SaveChanges();
         }
 
@@ -63,9 +61,7 @@ namespace BusinessAccess.Repository
 
         public List<string> GetAllAcoountNumber()
         {
-            List<string> customer = _db.Customers.Where(x => x.Isdelete == false).Select(x => x.Ac).ToList();
-            customer.Sort();
-            return customer;
+            return _db.Customers.Where(x => x.Isdelete == false).Select(x => x.Ac).ToList();
         }
 
         public PageFilterResponseDTO<CustomerListViewModel> GetCustomerList(PageFilterRequestDTO<CustomerSearchFilterDTO> pageFilter)
@@ -84,11 +80,11 @@ namespace BusinessAccess.Repository
                        Id = c.Id,
                        AC = c.Ac,
                        Name = c.Name,
-                       PostCode = c.Postcode,
-                       Country = c.Country,
-                       Telephone = c.Telephone,
-                       Relationship = c.Relation,
-                       currency = c.Currency
+                       PostCode = c.Postcode ?? "-",
+                       Country = c.Country ?? "-",
+                       Telephone = c.Telephone ?? "-",
+                       Relationship = c.Relation ?? "-",
+                       currency = c.Currency ?? "-"
                    };
                    return model;
                }).ToList<CustomerListViewModel>();
@@ -105,10 +101,7 @@ namespace BusinessAccess.Repository
         }
         public List<Group> CustomerGroupDetail(int id, string search)
         {
-            if (search == null)
-            {
-                return _db.Groups.Where(x => x.CustomerId == id && !x.Isdelete).OrderBy(x => x.Name).ToList();
-            }
+            if (search == null) return _db.Groups.Where(x => x.CustomerId == id && !x.Isdelete).OrderBy(x => x.Name).ToList();
             return _db.Groups.Where(x => x.CustomerId == id && !x.Isdelete)
                 .Where(x => x.Name.Trim().ToLower().Contains(search.Trim().ToLower()))
                 .OrderBy(x => x.Name.Trim().ToLower().IndexOf(search.Trim().ToLower()) != -1 ? x.Name.Trim().ToLower().IndexOf(search.Trim().ToLower()) : int.MaxValue)
@@ -126,23 +119,20 @@ namespace BusinessAccess.Repository
             string name = groupname.Trim().ToLower();
             if (groupid != 0)
             {
-                Group group = _db.Groups.FirstOrDefault(x=>x.Id==groupid && !x.Isdelete);
-                if(group != null)
+                Group group = _db.Groups.FirstOrDefault(x => x.Id == groupid && !x.Isdelete) ?? new Group();
+                if (group.Id != 0)
                 {
                     group.Name = groupname;
                     _db.Groups.Update(group);
                     _db.SaveChanges();
                     return true;
                 }
-                else
-                {
-                    return false;
-                }
+                else return false;
             }
             else
             {
-                Group group = _db.Groups.FirstOrDefault(x => x.Name.Trim().ToLower() == name && x.CustomerId == customerid && !x.Isdelete);
-                if (group == null)
+                Group group = _db.Groups.FirstOrDefault(x => x.Name.Trim().ToLower() == name && x.CustomerId == customerid && !x.Isdelete) ?? new Group();
+                if (group.Id == 0)
                 {
                     group = new Group
                     {
@@ -156,9 +146,7 @@ namespace BusinessAccess.Repository
                     return true;
                 }
                 else
-                {
                     return false;
-                }
             }
             //if (!_db.Mappings.Any(x => x.CustomerId == customerid && x.GroupId == group.Id))
             //{
@@ -179,7 +167,7 @@ namespace BusinessAccess.Repository
             //    _db.Mappings.Remove(mapping);
             //    _db.SaveChanges();
             //}
-            Group group = _db.Groups.FirstOrDefault(x => x.Id == groupid && x.CustomerId == customerid);
+            Group group = _db.Groups.FirstOrDefault(x => x.Id == groupid && x.CustomerId == customerid) ?? new Group();
             group.Isdelete = true;
             _db.SaveChanges();
         }
@@ -188,9 +176,7 @@ namespace BusinessAccess.Repository
         public List<Supplier> GetSupplierOfGroup(int groupid, string search)
         {
             if (search == null)
-            {
                 return _db.Suppliers.Where(x => x.GroupId == groupid).OrderBy(x => x.Name).ToList();
-            }
             return _db.Suppliers.Where(x => x.GroupId == groupid && x.Name.Trim().ToLower().Contains(search.Trim().ToLower()))
                  .OrderBy(x => x.Name.Trim().ToLower().IndexOf(search.Trim().ToLower()) != -1 ? x.Name.Trim().ToLower().IndexOf(search.Trim().ToLower()) : int.MaxValue)
                 .ThenBy(x => x.Name)
@@ -200,14 +186,76 @@ namespace BusinessAccess.Repository
         public List<Supplier> GetNullSupplier(string search)
         {
             if (search == null)
-            {
                 return _db.Suppliers.Where(x => x.GroupId == null).OrderBy(x => x.Name).ToList();
-            }
             return _db.Suppliers.Where(x => x.GroupId == null && x.Name.Trim().ToLower().Contains(search.Trim().ToLower()))
                 .OrderBy(x => x.Name.Trim().ToLower().IndexOf(search.Trim().ToLower()) != -1 ? x.Name.Trim().ToLower().IndexOf(search.Trim().ToLower()) : int.MaxValue)
                 .ThenBy(x => x.Name)
                 .ToList();
         }
 
+        /// <summary>
+        /// Contact Start From Here
+        /// </summary>
+        /// <returns></returns>
+
+        public CustomerGroupViewModel GetGroupCountandName(string acno)
+        {
+            Customer c = _db.Customers.Include(x => x.Groups).Include(x => x.Contacts).FirstOrDefault(x => x.Ac == acno && !(x.Isdelete ?? false)) ?? new Customer();
+            CustomerGroupViewModel model = new CustomerGroupViewModel
+            {
+                CustomerId = c.Id,
+                Ac = c.Ac,
+                Groups = c.Groups.Where(z => !z.Isdelete).ToList(),
+                TotalSelectedGroup = c.Groups.Where(x => x.Isselect && !x.Isdelete).Count(),
+                Contacts = c.Contacts.Where(x => !x.Isdelete).ToList()
+            };
+            Group g = c.Groups.FirstOrDefault(x => x.Isselect && !x.Isdelete) ?? new Group();
+            model.GroupName = g != null ? g.Name : "Select Group";
+            model.GroupId = g != null ? g.Id : 0;
+
+            return model;
+        }
+
+        public int AddThisContact(Contact contact)
+        {
+            Customer c = _db.Customers.FirstOrDefault(x => x.Id == contact.CustomerId) ?? new Customer();
+            if (c.Email == contact.Email)
+            {
+                if (contact.MailingList == "Subscribed") c.Issubscribe = true;
+                else c.Issubscribe = false;
+            }
+            if (contact.Id == 0) _db.Add(contact);
+            else _db.Update(contact);
+            _db.Contacts.Where(x => x.CustomerId == contact.CustomerId && !x.Isdelete && x.Email == contact.Email).ToList().ForEach(x => { x.MailingList = contact.MailingList; });
+            _db.SaveChanges();
+            return contact.Id;
+        }
+
+        public Contact GetContactDataById(int contactid)
+        {
+            Contact c = _db.Contacts.FirstOrDefault(x => x.Id == contactid && !x.Isdelete) ?? new Contact();
+            return new Contact
+            {
+                Id = c != null ? c.Id : 0,
+                Username = c != null ? c.Username : "",
+                Name = c != null ? c.Name : "",
+                Telephone = c != null ? c.Telephone : "",
+                Email = c != null ? c.Email : "",
+                MailingList = c != null ? c.MailingList : ""
+            };
+        }
+
+        public List<Contact> GetContactListOfCustomer(int customerId, string search)
+        {
+            if (search != null)
+                return _db.Contacts.Where(x => !x.Isdelete && x.CustomerId == customerId && x.Name.Trim().ToLower().Contains(search.Trim().ToLower())).OrderBy(x => x.Name.Trim().ToLower().IndexOf(search.Trim().ToLower()) != -1 ? x.Name.Trim().ToLower().IndexOf(search.Trim().ToLower()) : int.MaxValue).ThenBy(x => x.Name).ToList();
+            return _db.Contacts.Where(x => !x.Isdelete && x.CustomerId == customerId).ToList();
+        }
+
+        public void DeletthisContact(int contactid)
+        {
+            _db.Contacts.First(x => x.Id == contactid).Isdelete = true;
+            _db.SaveChanges();
+        }
     }
 }

@@ -27,5 +27,10 @@ namespace BusinessAccess.Repository.IRepository
         List<Supplier> GetSupplierOfGroup(int groupid, string search);
 
         List<Supplier> GetNullSupplier(string search);
+        CustomerGroupViewModel GetGroupCountandName(string acno);
+        int AddThisContact(Contact contact);
+        Contact GetContactDataById(int contactid);
+        List<Contact> GetContactListOfCustomer(int customerId, string search);
+        void DeletthisContact(int contactid);
     }
 }

@@ -1,4 +1,5 @@
-﻿var tab = $('.nav-link.active').attr('id');
+﻿
+var tab = $('.nav-link.active').attr('id');
 $('#listtab').on('click', function () {
 
     var link = document.createElement('a');

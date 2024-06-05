@@ -13,7 +13,7 @@ public partial class Supplier
     public int Id { get; set; }
 
     [Column(TypeName = "character varying")]
-    public string? Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
     public int? GroupId { get; set; }
 

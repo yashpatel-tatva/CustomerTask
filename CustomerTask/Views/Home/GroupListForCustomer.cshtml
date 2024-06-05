@@ -3,12 +3,11 @@
 {
     <div class="d-flex justify-content-between">
         <div>
-            <input type="checkbox" name="groupin" value="@group.Id" 
+            <input type="checkbox" name="groupin" value="@group.Id" data-name="@group.Name"
             @if (group.Isselect)
             {
                 @: checked
-            }
-            />
+            } />
             @group.Name
         </div>
         <div class="d-flex gap-2">
@@ -17,18 +16,25 @@
         </div>
     </div>
 }
+@{
+    var text = "";
+    if (Model.Where(x => x.Isselect).Count() == 0)
+    {
+        text = "No Selected";
+    }
+    else if (Model.Where(x => x.Isselect).Count() == 1)
+    {
+        text =  Model.FirstOrDefault(x => x.Isselect).Name;
+    }
+    else
+    {
+        var c = Model.Where(x => x.Isselect).Count() - 1;
+        text = Model.FirstOrDefault(x => x.Isselect).Name + " and " + c + " more....";
+    }
+}
 
 <script>
-    $('input[name="groupin"]').on('change' , function(){
-        var groupid = $(this).val();
-        var isselect = $(this).is(":checked");
-        $.ajax({
-            url : '/Home/SelectGroupInCustomer',
-            data : {groupid , isselect},
-            type : 'POST',
-            success : function(){
-                Swal.fire('Add');
-            }
-        })
-    })
+    $('#OpenGroupDialog').text("@text");
 </script>
+
+
