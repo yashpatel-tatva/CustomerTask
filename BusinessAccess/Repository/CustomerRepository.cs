@@ -22,7 +22,18 @@ namespace BusinessAccess.Repository
         public void Addthis(Customer model)
         {
             model.Isdelete = false;
-            _db.Customers.Add(model);
+            if (model.Id == 0)
+                _db.Customers.Add(model);
+            else
+               _db.Customers.Update(model);
+
+            if(model.Email != null)
+            {
+                _db.Contacts.Where(x => x.CustomerId == model.Id && !x.Isdelete && x.Email == model.Email).ToList().ForEach(x =>
+                {
+                    x.MailingList = model.Issubscribe ?? false ? "Subscribed" : "Unsubscribed";
+                });
+            }
             _db.SaveChanges();
         }
 
@@ -49,7 +60,7 @@ namespace BusinessAccess.Repository
 
         public void DeleteCustomerlist(List<int> ids)
         {
-             _db.Customers.Where(x => ids.Contains(x.Id) && (x.Isdelete == false)).ToList().ForEach(x => { x.Isdelete = true; });
+            _db.Customers.Where(x => ids.Contains(x.Id) && (x.Isdelete == false)).ToList().ForEach(x => { x.Isdelete = true; });
             _db.SaveChanges();
         }
 

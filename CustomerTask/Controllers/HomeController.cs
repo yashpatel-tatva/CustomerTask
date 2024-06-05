@@ -4,6 +4,7 @@ using DataAccess.DataViewModel;
 using DataAccess.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Text.RegularExpressions;
 
 namespace CustomerTask.Controllers
@@ -56,8 +57,12 @@ namespace CustomerTask.Controllers
             return _customer.GetInfoOfAC(acno);
         }
 
-        public void AddCustomer(CustomerDetailViewModel customer)
+        public IActionResult AddCustomer(CustomerDetailViewModel customer)
         {
+            //if(false)
+            //{
+            //    return BadRequest("Not Valid Form");
+            //}
             Customer model = new Customer
             {
                 Name = customer.Name,
@@ -76,10 +81,14 @@ namespace CustomerTask.Controllers
                 Isdelete = false
             };
             List<string?> issuscribe = Request.Form["Issubscribe"].ToList();
-            if (issuscribe.Count != 0) model.Issubscribe = true;
+            if (issuscribe[0] == "Subscribed") model.Issubscribe = true;
             else model.Issubscribe = false;
-            if (customer.Id == 0) _customer.Addthis(model);
-            else _customer.Editthis(model);
+            //if (customer.Id == 0) _customer.Addthis(model);
+            //else _customer.Editthis(model);
+
+            _customer.Addthis(model);
+            
+            return Ok("");
         }
 
 

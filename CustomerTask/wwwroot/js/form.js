@@ -56,7 +56,7 @@ $('#addsubmit').on('click', function () {
     }
     allFilled = !checkacexist()
     if (allFilled) {
-        if (form.valid()) {
+        if (true) {
             $.ajax({
                 url: '/Home/AddCustomer',
                 data: form.serialize(),
@@ -69,7 +69,6 @@ $('#addsubmit').on('click', function () {
                         showConfirmButton: false,
                         timer: 1500
                     });
-                    hideThisDialog()
                     var acno = $('input[name="Ac"]').val();
 
 
@@ -79,11 +78,14 @@ $('#addsubmit').on('click', function () {
 
                         link.click();
                     }, 1000)
+                },
+                error: function (error) {
+                    Swal.fire("Form Is InValid")
                 }
             })
         } else {
             console.error("invalid form")
-            form.validate().focusInvalid();
+            
         }
     } else {
         Swal.fire({
