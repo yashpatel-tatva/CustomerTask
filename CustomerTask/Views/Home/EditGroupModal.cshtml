@@ -2,17 +2,23 @@
 <div id="editgroupdialog" class="w-75 position-absolute editgroupdialog p-0 rounded-3">
     <div class="border border-2 rounded-2">
         <div class="w-100 d-flex justify-content-between p-2 rounded-3" style="background: linear-gradient(to bottom, #4777ae, #48607b);">
-            <div class="rounded">
-                <button class="rounded border-0 bg-white addgroupbtn" style="color:#48607b">
-                    <i class="fa-solid fa-plus"></i>
-                </button>
-            </div>
+            @if (Model.IsEdit)
+            {
+                <div class="rounded">
+                    <button class="rounded border-0 bg-white addgroupbtn" style="color:#48607b">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
+                </div>
+            }
             <div>
-                <button class="rounded border-0 bg-white" onclick="clearfilter()"><i class="fa-solid fa-broom"></i></button>
+                @if (Model.IsEdit)
+            {
+                    <button class="rounded border-0 bg-white" onclick="clearfilter()"><i class="fa-solid fa-broom"></i></button>
+                }
                 <button class="rounded border-0 bg-white" onclick="closeeditmodal()"><i class="fa-solid fa-xmark"></i></button>
             </div>
         </div>
-        <div class="p-3 ">
+        <div class="p-3 bg-white">
             <div class="form-group rounded">
                 <input type="text" id="groupsearch" class="w-100 p-2 form-control" /><span>Search</span>
             </div>
@@ -33,6 +39,8 @@
         </div>
     </div>
 </div>
-
-
+<input type="hidden" id="isedit" value="@Model.IsEdit"/>
+<script>
+    var isedit = "@Model.IsEdit";
+</script>
 <script src="~/js/groupmodel.js" asp-append-version="true"></script>

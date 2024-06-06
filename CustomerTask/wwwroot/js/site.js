@@ -27,14 +27,16 @@ function putdata(acno) {
                 $('#thisid').val(response.id);
                 $('#relation').val(response.relation);
                 $('#currency').val(response.currency);
-                if (response.issubscribe) {
+                if (response.issubscribe == null) {
+                    $('#mailinglist').val("");
+                }
+                else if (response.issubscribe) {
                     $('#mailinglist').val("Subscribed");
                     $('input[name="Issubscribe"][value="Subscribed"]').prop('checked', true)
                 }
-                else {
+                else if (!response.issubscribe) {
                     $('#mailinglist').val("Unsubscribed");
                     $('input[name="Issubscribe"][value="Unsubscribed"]').prop('checked', true)
-
                 }
                 $('.editthis').attr('data-id', response.ac)
             }
@@ -63,40 +65,57 @@ $('.editthis').on('click', function () {
     $('#saveandcancelinvoice').removeClass('d-none');
     $('#mailinglist').removeClass('readonly');
     $('.addfield').removeClass('d-none')
-    $('#OpenGroupDialog').prop('disabled' , false)
+    $('#OpenGroupDialog').val('true')
+    document.getElementById('editgroupmodel').style.display = 'none';
 })
 
 
 $('#OpenGroupDialog').on('click', function () {
     var id = $('#thisid').val();
+    var isedit = $(this).val();
     $.ajax({
         url: '/Home/OpenGroupModal',
-        data: { id },
+        data: { id, isedit },
         type: 'POST',
         success: function (res) {
             $('#editgroupmodel').html(res);
+            $('#editgroupmodel').show();
             //document.getElementById('editgroupdialog').show();
         }
     })
 })
-
+function opengroupmodal() {
+    var id = $('#thisid').val();
+    var isedit = $(this).val();
+    $.ajax({
+        url: '/Home/OpenGroupModal',
+        data: { id, isedit },
+        type: 'POST',
+        success: function (res) {
+            $('#editgroupmodel').html(res);
+            $('#editgroupmodel').show();
+            //document.getElementById('editgroupdialog').show();
+        }
+    })
+}
 
 /// -------------------- Contact --------------------------------///
 
 
 $('#issubscribeornot').on('click', function () {
     if (!$(this).hasClass('readonly')) {
-        $('#maillistdrop').removeClass('d-none')
+        $('#maillistdrop').show()
+
     }
 })
 $('#mailinglist').on('click', function () {
     if (!$(this).hasClass('readonly')) {
-        $('#maillistinvoicedrop').removeClass('d-none')
+        $('#maillistinvoicedrop').show()
     }
 })
 $('#fullname').on('click', function () {
     if ($(this).prop('readonly')) {
-        $('#contactsdrop').removeClass('d-none')
+        $('#contactsdrop').show()
     }
 })
 $('.editcontact').on('click', function () {
@@ -104,7 +123,8 @@ $('.editcontact').on('click', function () {
     openedit(c)
 })
 function openedit(contactid) {
-    document.getElementById('contactsdrop').classList.add('d-none')
+    document.getElementById('contactsdrop').style.display = 'none';
+
     if (contactid == 0) {
         $('.disable').val("")
         $('input[type="checkbox"][name="issubscribe"]').prop('checked', false);
@@ -188,12 +208,12 @@ $('input[type="checkbox"][name="Issubscribe"]').on('change', function () {
     $('input[type="checkbox"][name="Issubscribe"]').not(this).prop('checked', false);
     var maillist = ($('input[name="Issubscribe"]:checked').val());
     $('#mailinglist').val(maillist);
-    document.getElementById('maillistinvoicedrop').classList.add('d-none')
-    
+    document.getElementById('maillistinvoicedrop').style.display = 'none';
 });
 
 $('#closemaillistinvoice').on('click', function () {
-    document.getElementById('maillistinvoicedrop').classList.add('d-none')
+    document.getElementById('maillistinvoicedrop').style.display = 'none';
+
 })
 function getdataofcontact(contactid) {
     $.ajax({
@@ -212,7 +232,8 @@ function getdataofcontact(contactid) {
             $('input[type="checkbox"][name="issubscribe"]').prop('checked', false);
             $('input[type="checkbox"][value="' + res.mailingList + '"]').prop('checked', true);
             $('#fullnamespan').text(res.name);
-            document.getElementById('contactsdrop').classList.add('d-none')
+            document.getElementById('contactsdrop').style.display = 'none';
+
         }
     })
 }

@@ -54,7 +54,8 @@ namespace CustomerTask.Controllers
 
         public Customer GetInfoOfAC(string acno)
         {
-            return _customer.GetInfoOfAC(acno);
+            Customer model = _customer.GetInfoOfAC(acno) ??  new Customer();
+            return model;
         }
 
         public IActionResult AddCustomer(CustomerDetailViewModel customer)
@@ -81,13 +82,14 @@ namespace CustomerTask.Controllers
                 Isdelete = false
             };
             List<string?> issuscribe = Request.Form["Issubscribe"].ToList();
-            if (issuscribe[0] == "Subscribed") model.Issubscribe = true;
+            if(issuscribe.Count == 0) model.Issubscribe = false;
+            else if (issuscribe[0] == "Subscribed") model.Issubscribe = true;
             else model.Issubscribe = false;
             //if (customer.Id == 0) _customer.Addthis(model);
             //else _customer.Editthis(model);
 
             _customer.Addthis(model);
-            
+
             return Ok("");
         }
 
@@ -116,66 +118,68 @@ namespace CustomerTask.Controllers
 
         public IActionResult OpenDetailForm(int id)
         {
-            if (id == 0)
+            Customer customer = GetInfoOfId(id) ?? new Customer();
+            if (customer.Id == 0)
             {
-                CustomerDetailViewModel customer = new CustomerDetailViewModel();
-                return PartialView("_DetailForm", customer);
+                CustomerDetailViewModel customer1 = new();
+                return View("_DetailForm", customer1);
             }
             else
             {
-                Customer customer = GetInfoOfId(id);
-                CustomerDetailViewModel model = new CustomerDetailViewModel
+                CustomerDetailViewModel model = new()
                 {
                     Name = customer.Name,
-                    Postcode = customer.Postcode,
-                    Country = customer.Country,
-                    Telephone = customer.Telephone,
-                    Relation = customer.Relation,
-                    Currency = customer.Currency,
-                    Address1 = customer.Address1,
-                    Address2 = customer.Address2,
-                    Town = customer.Town,
-                    County = customer.County,
-                    Email = customer.Email,
-                    Issubscribe = (bool)customer.Issubscribe,
-                    Ac = customer.Ac,
+                    Postcode = customer.Postcode ?? "-",
+                    Country = customer.Country ?? "-",
+                    Telephone = customer.Telephone ?? "-",
+                    Relation = customer.Relation ?? "-",
+                    Currency = customer.Currency ?? "-",
+                    Address1 = customer.Address1 ?? "-",
+                    Address2 = customer.Address2 ?? "-",
+                    Town = customer.Town ?? "-",
+                    County = customer.County ?? "-",
+                    Email = customer.Email ?? "-",
+                    Issubscribe = customer.Issubscribe ,
+                    Ac = customer.Ac ?? "-",
                     Id = customer.Id
                 };
-                return PartialView("_DetailForm", model);
+                return View("_DetailForm", model);
             }
         }
 
         private Customer GetInfoOfId(int id)
         {
-            return _customer.GetInfoOfId(id);
+            return _customer.GetInfoOfId(id) ?? new Customer();
         }
 
 
-        public IActionResult OpenGroupModal(int id)
+        public IActionResult OpenGroupModal(int id , bool isedit)
         {
 
-            return PartialView("EditGroupModal", new { Customerid = id });
+            return PartialView("EditGroupModal", new { Customerid = id , IsEdit = isedit });
         }
 
-        public IActionResult CustomerGroupData(int customerid, string search)
+        public IActionResult CustomerGroupData(int customerid, string search , bool isedit)
         {
+            ViewBag.isedit = isedit;
             return PartialView("GroupListForCustomer", _customer.CustomerGroupDetail(customerid, search));
         }
 
         public IActionResult AddGroupModal(int customerid, int groupid)
         {
             Group g = _group.GetFirstOrDefault(x => x.Id == groupid);
-            CustomerGroupViewModel customerGroup = new CustomerGroupViewModel();
-
-            customerGroup.CustomerId = customerid;
-            customerGroup.GroupId = groupid;
-            customerGroup.GroupName = g != null ?  g.Name : "";
-            customerGroup.Groups = null;
+            CustomerGroupViewModel customerGroup = new()
+            {
+                CustomerId = customerid,
+                GroupId = groupid,
+                GroupName = g != null ? g.Name : "",
+                Groups = new List<Group>()
+            };
 
             return PartialView("AddGroupModal", customerGroup);
         }
 
-        public bool SelectGroupInCustomer(int groupid , bool isselect)
+        public bool SelectGroupInCustomer(int groupid, bool isselect)
         {
             return _group.SelectGroupInCustomer(groupid, isselect);
         }
@@ -228,7 +232,7 @@ namespace CustomerTask.Controllers
 
         public IActionResult GetContactListOfCustomer(int CustomerId, string search)
         {
-            List<Contact> model = _customer.GetContactListOfCustomer(CustomerId , search);
+            List<Contact> model = _customer.GetContactListOfCustomer(CustomerId, search);
             return PartialView("ContactListForCustomer", model);
         }
         public void DeletthisContact(int contactid)

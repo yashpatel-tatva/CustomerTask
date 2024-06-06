@@ -22,6 +22,9 @@ body {
     margin-bottom: 60px;
     font-family: monospace !important;
 }
+::-webkit-scrollbar {
+    width: 0px; /* Set the width of the scrollbar */
+}
 
 .paginate_button,
 .paginate_Nextbutton,
@@ -245,12 +248,12 @@ input:not(:placeholder-shown) + span {
     transform: translateY(-100%);
 }*/
 
-.addgroupdialog[open] {
+/*.addgroupdialog[open] {
     -webkit-animation: addgroupdialog 1s ease-in-out;
 }
 
 @-webkit-keyframes addgroupdialog {
-    0% {    
+    0% {
         transform: scale(0.1);
         opacity: 0;
     }
@@ -259,7 +262,74 @@ input:not(:placeholder-shown) + span {
         transform: translate(110%, -250%);
         opacity: 1;
     }
+}*/
+
+
+
+@keyframes pendulum {
+    0% {
+        transform: rotateX(-90deg);
+    }
+
+    100% {
+        transform: rotateX(0deg);
+    }
+}
+
+#maillistdrop, #maillistinvoicedrop, #contactsdrop, #editgroupmodel {
+    animation: pendulum 0.5s ease-in-out 1;
+    transform-origin: top center;
+    display: none;
 }
 
 
+@keyframes shake {
+    0% {
+        transform: translate(30%, -150%) rotate(0deg);
+    }
 
+    10% {
+        transform: translate(30%, -150%)rotate(-1deg);
+    }
+
+    20% {
+        transform: translate(30%, -150%) rotate(1deg);
+    }
+
+    30% {
+        transform: translate(30%, -150%) rotate(0deg);
+    }
+
+    40% {
+        transform: translate(30%, -150%) rotate(1deg);
+    }
+
+    50% {
+        transform: translate(30%, -150%) rotate(-1deg);
+    }
+
+    60% {
+        transform: translate(30%, -150%) rotate(0deg);
+    }
+
+    70% {
+        transform: translate(30%, -150%) rotate(-1deg);
+    }
+
+    80% {
+        transform: translate(30%, -150%) rotate(1deg);
+    }
+
+    90% {
+        transform: translate(30%, -150%) rotate(0deg);
+    }
+
+    100% {
+        transform: translate(30%, -150%) rotate(-1deg);
+    }
+}
+
+.shake {
+    animation: shake 0.5s;
+    animation-iteration-count: infinite;
+}

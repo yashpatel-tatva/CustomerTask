@@ -12,27 +12,27 @@ namespace BusinessAccess.Repository
 
         public void EditSupplierinGroup(int groupid, List<int> removefromgroup, List<int> addtogroup)
         {
-            List<Supplier> removesuppliers = removefromgroup.Select(x =>
-            {
-                Supplier s = _db.Suppliers.FirstOrDefault(s => s.Id == x);
-                s.GroupId = null;
-                return s;
-            }).ToList();
-            List<Supplier> addsupplier = addtogroup.Select(x =>
-            {
-                Supplier s = _db.Suppliers.FirstOrDefault(s => s.Id == x);
-                s.GroupId = groupid;
-                return s;
-            }).ToList();
-            List<Supplier> update = removesuppliers.Concat(addsupplier).ToList();
-            _db.Suppliers.UpdateRange(update);
-            _db.SaveChanges();
+            //List<Supplier> removesuppliers = removefromgroup.Select(x =>
+            //{
+            //    Supplier s = _db.Suppliers.FirstOrDefault(s => s.Id == x);
+            //    s.GroupId = null;
+            //    return s;
+            //}).ToList();
+            //List<Supplier> addsupplier = addtogroup.Select(x =>
+            //{
+            //    Supplier s = _db.Suppliers.FirstOrDefault(s => s.Id == x);
+            //    s.GroupId = groupid;
+            //    return s;
+            //}).ToList();
+            //List<Supplier> update = removesuppliers.Concat(addsupplier).ToList();
+            //_db.Suppliers.UpdateRange(update);
+            //_db.SaveChanges();
         }
 
         public bool SelectGroupInCustomer(int groupid, bool isselect)
         {
-            Group group = _db.Groups.FirstOrDefault(g => g.Id == groupid);
-            if (group != null)
+            Group group = _db.Groups.FirstOrDefault(g => g.Id == groupid) ?? new Group();
+            if (group.Id != 0)
             {
                 group.Isselect = isselect;
                 _db.SaveChanges();

@@ -1,5 +1,6 @@
 ﻿var customerid = $('#thiscustomerid').val()
 var search = $('#groupsearch').val();
+
 getgroups(customerid, search);
 
 
@@ -88,11 +89,17 @@ function closeeditmodal() {
     var adddialog = document.getElementById('addgroupdialog');
     if (adddialog == null) {
         document.getElementById('editgroupdialog').remove();
+        document.getElementById('editgroupmodel').style.display = 'none';
     }
     else if (adddialog.open) {
+        adddialog.classList.add('shake');
         adddialog.classList.add('border-danger');
+        setTimeout(function () {
+            adddialog.classList.remove('shake');
+        },1000)
     } else {
         document.getElementById('editgroupdialog').remove();
+        document.getElementById('editgroupmodel').style.display = 'none';
     }
 }
 
@@ -126,9 +133,10 @@ function getsuppliers(groupid, search) {
 
 function getgroups(customerid, search) {
     customerid = parseInt(customerid)
+    console.log(isedit)
     $.ajax({
         url: '/Home/CustomerGroupData',
-        data: { customerid, search },
+        data: { customerid, search , isedit},
         type: 'POST',
         success: function (res) {
             $('.grouplist').html(res);

@@ -55,15 +55,20 @@ $('.deletecustomer').on('click', function () {
 
 
 $('.addcustomer').on('click', function () {
-    $.ajax({
-        url: '/Home/OpenDetailForm',
-        data: { id: 0 },
-        success: function (res) {
-            $('.popup').html(res)
-            $('#adddialog').addClass('foradd');
-            document.getElementById('adddialog').show();
-        }
-    }) 
+    //$.ajax({
+    //    url: '/Home/OpenDetailForm',
+    //    data: { id: 0 },
+    //    success: function (res) {
+    //        $('.popup').html(res)
+    //        $('#adddialog').addClass('foradd');
+    //        document.getElementById('adddialog').show();
+    //    }
+    //}) 
+
+    var link = document.createElement('a');
+    link.href = "/Home/OpenDetailForm?id=0"
+    link.click();
+
 })
 function hideThisDialog() {
     document.getElementById('adddialog').close();

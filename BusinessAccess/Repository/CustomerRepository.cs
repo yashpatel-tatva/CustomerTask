@@ -233,7 +233,8 @@ namespace BusinessAccess.Repository
             if (c.Email == contact.Email)
             {
                 if (contact.MailingList == "Subscribed") c.Issubscribe = true;
-                else c.Issubscribe = false;
+                else if (contact.MailingList == "Unsubscribed") c.Issubscribe = false;
+                else c.Issubscribe = null;
             }
             if (contact.Id == 0) _db.Add(contact);
             else _db.Update(contact);
