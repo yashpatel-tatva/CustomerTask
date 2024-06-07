@@ -14,7 +14,7 @@ builder.Services.AddDbContext<CustomerDbContext>();
 
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IGroupRepository, GroupRepository>();
-builder.Services.AddScoped<IPaginationRepository<CustomerListViewModel, CustomerSearchFilterDTO>, PaginationRepository<CustomerListViewModel , CustomerSearchFilterDTO>>();
+builder.Services.AddScoped<IPaginationRepository<CustomerListViewModel, CustomerSearchFilterDTO>, PaginationRepository<CustomerListViewModel, CustomerSearchFilterDTO>>();
 
 var app = builder.Build();
 

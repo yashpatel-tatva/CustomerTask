@@ -23,7 +23,7 @@
         <div class="col-6  justify-content-center  d-flex rounded" style="color:white">
             <div class="searchdiv rounded" style="height : fit-content">
                 <i class="fas fa-bars"></i>
-                <input type="search" id="search" value="@ViewBag.Search" class="border-0 text-white" placeholder="Search Customer" />
+                <input type="search" id="search" value="@ViewBag.search" class="border-0 text-white" placeholder="search Customer" />
                 <i class="fas fa-search"></i>
             </div>
         </div>
@@ -44,7 +44,7 @@
 
             <div id="detaildiv">
                 <div class="h4 mb-0 d-flex gap-2 align-items-center" style="color : #303A4F">
-                    <div id="customerid" class="rounded-pill shadow text-white p-1 px-3" style="background-color : #303A4Fbf ; font-family: sans-serif"></div>
+                    <div id="customerId" class="rounded-pill shadow text-white p-1 px-3" style="background-color : #303A4Fbf ; font-family: sans-serif"></div>
                     <span id="customername"></span>
                 </div>
             </div>
@@ -53,10 +53,10 @@
             <div class="d-flex gap-3">
                 <button class="add-button text-info addcustomer">
                     <svg class="add-svgIcon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 45.402 45.402" >
-                            <path d="M41.267,18.557H26.832V4.134C26.832,1.851,24.99,0,22.707,0c-2.283,0-4.124,1.851-4.124,4.135v14.432H4.141 c-2.283,0-4.139,1.851-4.138,4.135c-0.001,1.141,0.46,2.187,1.207,2.934c0.748,0.749,1.78,1.222,2.92,1.222h14.453V41.27 c0,1.142,0.453,2.176,1.201,2.922c0.748,0.748,1.777,1.211,2.919,1.211c2.282,0,4.129-1.851,4.129-4.133V26.857h14.435 c2.283,0,4.134-1.867,4.133-4.15C45.399,20.425,43.548,18.557,41.267,18.557z"></path> </g> </g>
+                            <path d="M41.267,18.557H26.832V4.134C26.832,1.851,24.99,0,22.707,0c-2.283,0-4.124,1.851-4.124,4.135v14.432H4.141 c-2.283,0-4.139,1.851-4.138,4.135c-0.001,1.141,0.46,2.187,1.207,2.934c0.748,0.749,1.78,1.222,2.92,1.222h14.453V41.27 c0,1.142,0.453,2.176,1.201,2.922c0.748,0.748,1.777,1.211,2.919,1.211c2.282,0,4.129-1.851,4.129-4.133V26.857h14.435 c2.283,0,4.134-1.867,4.133-4.15C45.399,20.425,43.548,18.557,41.267,18.557z"></path> 
                     </svg>
                 </button>
-                <button class="delete-button text-danger deletecustomer">
+                <button class="delete-button text-danger deletecustomer" id="dc">
                     <svg class="delete-svgIcon" viewBox="0 0 448 512">
                         <path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"></path>
                     </svg>

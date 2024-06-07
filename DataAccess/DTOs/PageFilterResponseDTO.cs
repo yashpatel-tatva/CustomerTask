@@ -9,6 +9,6 @@
         public string OrderColumnName { get; set; } = string.Empty;
         public bool OrderBy { get; set; }
         public int TotalRecords { get; set; }
-        public List<T> Data { get; set; } 
+        public List<T> Data { get; set; }
     }
 }

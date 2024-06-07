@@ -1,8 +1,6 @@
 ﻿@model CustomerDetailViewModel
-
-
 <div id="adddialog" class="w-75 p-3 rounded border">
-    <input type="hidden" id="isedit" />
+    <input type="hidden" id="isEdit" />
     <form id="form" class="p-3  shadow rounded">
         <h2 class="text-center text-info mb-3">Customer Details</h2>
         <div class="d-flex flex-wrap gap-2">
@@ -21,7 +19,7 @@
                 <div class="col-xl-3 ps-5 font-weight-bold">County</div>                     <div class="col-xl-6"><input type="text" asp-for="County" required class="" /><span name="County" class="text-danger h6 mb-0"></span></div>
                 <div class="col-xl-3 ps-5 font-weight-bold">Email</div>                     <div class="col-xl-6"><input type="email" asp-for="Email" required class="" /><span name="Email" class="text-danger h6 mb-0"></span></div>
                 <div class="col-xl-3 ps-5 font-weight-bold">Is subscribe?</div>                     <div class="col-xl-6">
-                    <input type="checkbox" name="Issubscribe" value="Subscribed"
+                    <input type="checkbox" name="IssubscribeInvoice" value="Subscribed"
                     @if (Model.Issubscribe == true)
                     {
                         @: checked
@@ -32,14 +30,12 @@
         </div>
         <div class="d-flex gap-2 justify-content-end mt-3">
             <button class="btn btn-info " type="button" id="addsubmit">Submit</button>
-            @*<button class="btn btn-danger" type="button" onclick="hideThisDialog()">Close</button>*@
         </div>
     </form>
 </div>
 <script>
     $('.searchdiv').hide();
     $('#headerdiv').addClass('d-none').removeClass('d-flex')
-
 </script>
 <script src="~/lib/jquery-validation/dist/jquery.validate.min.js" asp-append-version="true"></script>
 <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js" asp-append-version="true"></script>

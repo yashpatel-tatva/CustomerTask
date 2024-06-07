@@ -1367,9 +1367,9 @@ $.fn.dropdown = function(parameters) {
                 inVisibleMenu         = ($parentMenu.hasClass(className.visible) || $parentMenu.hasClass(className.animating) || $parentMenu.parent(selector.menu).length > 0),
                 hasSubMenu            = ($subMenu.length> 0),
                 hasSelectedItem       = ($selectedItem.length > 0),
-                selectedIsSelectable  = ($selectedItem.not(selector.unselectable).length > 0),
+                selectedisSelectable  = ($selectedItem.not(selector.unselectable).length > 0),
                 delimiterPressed      = (pressedKey == keys.delimiter && settings.allowAdditions && module.is.multiple()),
-                isAdditionWithoutMenu = (settings.allowAdditions && settings.hideAdditions && (pressedKey == keys.enter || delimiterPressed) && selectedIsSelectable),
+                isAdditionWithoutMenu = (settings.allowAdditions && settings.hideAdditions && (pressedKey == keys.enter || delimiterPressed) && selectedisSelectable),
                 $nextItem,
                 isSubMenuItem,
                 newIndex
@@ -1392,7 +1392,7 @@ $.fn.dropdown = function(parameters) {
                     module.verbose('Pressed enter on unselectable category, opening sub menu');
                     pressedKey = keys.rightArrow;
                   }
-                  else if(selectedIsSelectable) {
+                  else if(selectedisSelectable) {
                     module.verbose('Selecting item from keyboard shortcut', $selectedItem);
                     module.event.item.click.call($selectedItem, event);
                     if(module.is.searchSelection()) {

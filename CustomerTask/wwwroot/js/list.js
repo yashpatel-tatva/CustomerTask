@@ -137,10 +137,10 @@ $('.paginate_last').on('click', function () {
 
 $(document).on('dblclick', '.customerrow', function () {
 
-    var acno = $(this).data('id');
+    var acNo = $(this).data('id');
 
     var link = document.createElement('a');
-    link.href = '/Home/DetailOfCustomer?acno=' + acno;
+    link.href = '/Home/DetailOfCustomer?acNo=' + acNo;
 
     link.click();
 });

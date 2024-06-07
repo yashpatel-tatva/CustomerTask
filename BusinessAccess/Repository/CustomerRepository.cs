@@ -4,7 +4,6 @@ using DataAccess.DataViewModel;
 using DataAccess.DTOs;
 using DataAccess.Repository;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics.Contracts;
 using System.Xml.Linq;
 using Group = CustomerTask.Group;
 
@@ -19,60 +18,46 @@ namespace BusinessAccess.Repository
             _paginationRepository = paginationRepository;
         }
 
-        public void Addthis(Customer model)
+        public async Task UpSertCustomer(Customer model)
         {
             model.Isdelete = false;
-            if (model.Id == 0)
-                _db.Customers.Add(model);
-            else
-               _db.Customers.Update(model);
-
-            if(model.Email != null)
-            {
+            if (model.Id == 0) await _db.Customers.AddAsync(model);
+            else _db.Customers.Update(model);
+            if (model.Email != null)
                 _db.Contacts.Where(x => x.CustomerId == model.Id && !x.Isdelete && x.Email == model.Email).ToList().ForEach(x =>
-                {
-                    x.MailingList = model.Issubscribe ?? false ? "Subscribed" : "Unsubscribed";
-                });
-            }
+               {
+                   x.MailingList = model.Issubscribe ?? false ? "Subscribed" : "Unsubscribed";
+               });
             _db.SaveChanges();
         }
 
-        public bool CheckACExist(int id, string acno)
+        public async Task<bool> CheckACExist(int id, string acNo)
         {
-            return _db.Customers.Any(x => x.Ac == acno && x.Isdelete == false && x.Id != id);
+            return await _db.Customers.AnyAsync(x => x.Ac == acNo && x.Isdelete == false && x.Id != id);
         }
 
-        public bool CheckCompanyNameExist(int id, string name)
+        public async Task<bool> CheckCompanyNameExist(int id, string name)
         {
             if (string.IsNullOrEmpty(name)) return false;
-            return _db.Customers.Any(x => x.Name.Trim().ToLower() == name.Trim().ToLower() && x.Isdelete == false && x.Id != id);
+            return await _db.Customers.AnyAsync(x => x.Name.Trim().ToLower() == name.Trim().ToLower() && x.Isdelete == false && x.Id != id);
         }
-
-        public void DeleteCustomer(string acno)
-        {
-            Customer cust = _db.Customers.FirstOrDefault(x => x.Ac == acno) ?? new Customer();
-            if (cust.Id != 0)
-            {
-                cust.Isdelete = true;
-                _db.SaveChanges();
-            }
-        }
-
-        public void DeleteCustomerlist(List<int> ids)
+        public async Task DeleteCustomerlist(List<int> ids)
         {
             _db.Customers.Where(x => ids.Contains(x.Id) && (x.Isdelete == false)).ToList().ForEach(x => { x.Isdelete = true; });
-            _db.SaveChanges();
+            _db.Contacts.Where(x => ids.Contains(x.CustomerId ?? 0) && (x.Isdelete == false)).ToList().ForEach(x => { x.Isdelete = true; });
+            _db.Groups.Where(x => ids.Contains(x.CustomerId ?? 0) && (x.Isdelete == false)).ToList().ForEach(x => { x.Isdelete = true; });
+            await _db.SaveChangesAsync();
         }
 
-        public void Editthis(Customer model)
+        public async Task EditCustomer(Customer model)
         {
             _db.Customers.Update(model);
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
         }
 
-        public List<string> GetAllAcoountNumber()
+        public async Task<List<string>> GetAllAcoountNumber()
         {
-            return _db.Customers.Where(x => x.Isdelete == false).Select(x => x.Ac).ToList();
+            return await _db.Customers.Where(x => x.Isdelete == false).Select(x => x.Ac).ToListAsync();
         }
 
         public PageFilterResponseDTO<CustomerListViewModel> GetCustomerList(PageFilterRequestDTO<CustomerSearchFilterDTO> pageFilter)
@@ -82,137 +67,119 @@ namespace BusinessAccess.Repository
             return customerresponse;
         }
 
-        public List<CustomerListViewModel> GetCustomerViewList(List<Customer> customertable)
+        public List<CustomerListViewModel> GetCustomerViewList(List<Customer> customers)
         {
-            return customertable.Select(c =>
+            return customers.Select(c =>
                {
                    CustomerListViewModel model = new()
                    {
                        Id = c.Id,
                        AC = c.Ac,
                        Name = c.Name,
-                       PostCode = c.Postcode ?? "-",
-                       Country = c.Country ?? "-",
-                       Telephone = c.Telephone ?? "-",
-                       Relationship = c.Relation ?? "-",
-                       currency = c.Currency ?? "-"
+                       PostCode = c.Postcode ?? string.Empty,
+                       Country = c.Country ?? string.Empty,
+                       Telephone = c.Telephone ?? string.Empty,
+                       Relationship = c.Relation ?? string.Empty,
+                       currency = c.Currency ?? string.Empty
                    };
                    return model;
-               }).ToList<CustomerListViewModel>();
+               }).ToList();
         }
 
-        public Customer? GetInfoOfAC(string acno)
+        public async Task<Customer> GetInfoOfAC(string acNo)
         {
-            return _db.Customers.FirstOrDefault(x => x.Ac == acno && x.Isdelete == false);
+            return await _db.Customers.FirstOrDefaultAsync(x => x.Ac == acNo && x.Isdelete == false) ?? new Customer();
         }
 
-        public Customer? GetInfoOfId(int id)
+        public async Task<Customer?> GetInfoOfId(int id)
         {
-            return _db.Customers.FirstOrDefault(x => x.Id == id && x.Isdelete == false);
+            return await _db.Customers.FirstOrDefaultAsync(x => x.Id == id && x.Isdelete == false) ?? new Customer();
         }
-        public List<Group> CustomerGroupDetail(int id, string search)
+        public async Task<List<GroupViewModel>> CustomerGroupDetail(int id, string search)
         {
-            if (search == null) return _db.Groups.Where(x => x.CustomerId == id && !x.Isdelete).OrderBy(x => x.Name).ToList();
-            return _db.Groups.Where(x => x.CustomerId == id && !x.Isdelete)
-                .Where(x => x.Name.Trim().ToLower().Contains(search.Trim().ToLower()))
-                .OrderBy(x => x.Name.Trim().ToLower().IndexOf(search.Trim().ToLower()) != -1 ? x.Name.Trim().ToLower().IndexOf(search.Trim().ToLower()) : int.MaxValue)
-                .ThenBy(x => x.Name)
-                .ToList();
-        }
-
-        public List<Group> AllGroups()
-        {
-            return _db.Groups.ToList();
+            return await _db.Groups
+                    .Where(x => x.CustomerId == id && !x.Isdelete)
+                    .Where(x => search == null || x.Name.Trim().ToLower().Contains(search.Trim().ToLower()))
+                    .OrderBy(x => search == null ? x.Name : (x.Name.Trim().ToLower().IndexOf(search.Trim().ToLower()) != -1 ? x.Name.Trim().ToLower().IndexOf(search.Trim().ToLower()).ToString() : int.MaxValue.ToString()))
+                    .ThenBy(x => x.Name)
+                    .Select(group => GetGroupViewModel(group)).ToListAsync();
         }
 
-        public bool AddGroupInCustomer(int customerid, int groupid, string groupname)
+        public async Task<List<Group>> AllGroups()
         {
-            string name = groupname.Trim().ToLower();
-            if (groupid != 0)
+            return await _db.Groups.ToListAsync();
+        }
+
+        public async Task<bool> CustomerGroupExist(int customerId, int groupId, string groupName)
+        {
+            return await _db.Groups
+               .AnyAsync(x => x.CustomerId == customerId && ((groupId == 0) || (x.Id != groupId)) && !x.Isdelete && x.Name.Trim().ToLower() == groupName.Trim().ToLower());
+        }
+
+        public async Task<bool> UpSertCustomerGroup(int customerId, int groupId, string groupName)
+        {
+            string name = groupName.Trim().ToLower();
+            Group group;
+
+            if (groupId != 0)
             {
-                Group group = _db.Groups.FirstOrDefault(x => x.Id == groupid && !x.Isdelete) ?? new Group();
-                if (group.Id != 0)
-                {
-                    group.Name = groupname;
-                    _db.Groups.Update(group);
-                    _db.SaveChanges();
-                    return true;
-                }
-                else return false;
+                group = await _db.Groups.FirstOrDefaultAsync(x => x.Id == groupId && !x.Isdelete) ?? new Group();
+                if (group.Id == 0)
+                    return false;
+                group.Name = groupName;
             }
             else
             {
-                Group group = _db.Groups.FirstOrDefault(x => x.Name.Trim().ToLower() == name && x.CustomerId == customerid && !x.Isdelete) ?? new Group();
-                if (group.Id == 0)
-                {
-                    group = new Group
-                    {
-                        Name = groupname,
-                        CustomerId = customerid,
-                        Isdelete = false,
-                        Isselect = true,
-                    };
-                    _db.Groups.Add(group);
-                    _db.SaveChanges();
-                    return true;
-                }
-                else
+                group = await _db.Groups.FirstOrDefaultAsync(x => x.Name.Trim().ToLower() == name && x.CustomerId == customerId && !x.Isdelete) ?? new Group();
+                if (group.Id != 0)
                     return false;
+                group = new Group
+                {
+                    Name = groupName,
+                    CustomerId = customerId,
+                    Isdelete = false,
+                    Isselect = true,
+                };
+                _db.Groups.Add(group);
             }
-            //if (!_db.Mappings.Any(x => x.CustomerId == customerid && x.GroupId == group.Id))
-            //{
-            //    _db.Mappings.Add(new Mapping
-            //    {
-            //        CustomerId = customerid,
-            //        GroupId = group.Id,
-            //    });
-            //    _db.SaveChanges();
-            //}
+            await _db.SaveChangesAsync();
+            return true;
         }
 
-        public void DeleteGroupFromCustomer(int customerid, int groupid)
+        public async Task DeleteGroupCustomer(int customerId, int groupId)
         {
-            //Mapping mapping = _db.Mappings.FirstOrDefault(x => x.CustomerId == customerid && x.GroupId == groupid);
-            //if (mapping != null)
-            //{
-            //    _db.Mappings.Remove(mapping);
-            //    _db.SaveChanges();
-            //}
-            Group group = _db.Groups.FirstOrDefault(x => x.Id == groupid && x.CustomerId == customerid) ?? new Group();
-            group.Isdelete = true;
-            _db.SaveChanges();
+            Group group = await _db.Groups.FirstOrDefaultAsync(x => x.Id == groupId && x.CustomerId == customerId) ?? new Group();
+            if (group.Id != 0)
+            {
+                group.Isdelete = true;
+                await _db.SaveChangesAsync();
+            }
         }
 
-
-        public List<Supplier> GetSupplierOfGroup(int groupid, string search)
+        public async Task<List<Supplier>> GetSupplierOfGroup(int groupId, string search)
         {
             if (search == null)
-                return _db.Suppliers.Where(x => x.GroupId == groupid).OrderBy(x => x.Name).ToList();
-            return _db.Suppliers.Where(x => x.GroupId == groupid && x.Name.Trim().ToLower().Contains(search.Trim().ToLower()))
+                return await _db.Suppliers.Where(x => x.GroupId == groupId).OrderBy(x => x.Name).ToListAsync();
+            return await _db.Suppliers.Where(x => x.GroupId == groupId && x.Name.Trim().ToLower().Contains(search.Trim().ToLower()))
                  .OrderBy(x => x.Name.Trim().ToLower().IndexOf(search.Trim().ToLower()) != -1 ? x.Name.Trim().ToLower().IndexOf(search.Trim().ToLower()) : int.MaxValue)
                 .ThenBy(x => x.Name)
-                .ToList();
+                .ToListAsync();
         }
 
-        public List<Supplier> GetNullSupplier(string search)
+        public async Task<List<Supplier>> GetNullSupplier(string search)
         {
             if (search == null)
-                return _db.Suppliers.Where(x => x.GroupId == null).OrderBy(x => x.Name).ToList();
-            return _db.Suppliers.Where(x => x.GroupId == null && x.Name.Trim().ToLower().Contains(search.Trim().ToLower()))
+                return await _db.Suppliers.Where(x => x.GroupId == null).OrderBy(x => x.Name).ToListAsync();
+            return await _db.Suppliers.Where(x => x.GroupId == null && x.Name.Trim().ToLower().Contains(search.Trim().ToLower()))
                 .OrderBy(x => x.Name.Trim().ToLower().IndexOf(search.Trim().ToLower()) != -1 ? x.Name.Trim().ToLower().IndexOf(search.Trim().ToLower()) : int.MaxValue)
                 .ThenBy(x => x.Name)
-                .ToList();
+                .ToListAsync();
         }
 
-        /// <summary>
-        /// Contact Start From Here
-        /// </summary>
-        /// <returns></returns>
-
-        public CustomerGroupViewModel GetGroupCountandName(string acno)
+        public async Task<CustomerGroupViewModel> GetGroupCountandName(string acNo)
         {
-            Customer c = _db.Customers.Include(x => x.Groups).Include(x => x.Contacts).FirstOrDefault(x => x.Ac == acno && !(x.Isdelete ?? false)) ?? new Customer();
-            CustomerGroupViewModel model = new CustomerGroupViewModel
+            Customer c = await _db.Customers.Include(x => x.Groups).Include(x => x.Contacts).FirstOrDefaultAsync(x => x.Ac == acNo && !(x.Isdelete ?? false)) ?? new();
+            CustomerGroupViewModel model = new()
             {
                 CustomerId = c.Id,
                 Ac = c.Ac,
@@ -223,14 +190,13 @@ namespace BusinessAccess.Repository
             Group g = c.Groups.FirstOrDefault(x => x.Isselect && !x.Isdelete) ?? new Group();
             model.GroupName = g != null ? g.Name : "Select Group";
             model.GroupId = g != null ? g.Id : 0;
-
             return model;
         }
 
-        public int AddThisContact(Contact contact)
+        public async Task<int> UpSertCustomerContact(Contact contact)
         {
-            Customer c = _db.Customers.FirstOrDefault(x => x.Id == contact.CustomerId) ?? new Customer();
-            if (c.Email == contact.Email)
+            Customer c = await _db.Customers.FirstOrDefaultAsync(x => x.Id == contact.CustomerId && x.Email == contact.Email) ?? new Customer();
+            if (c.Email != null)
             {
                 if (contact.MailingList == "Subscribed") c.Issubscribe = true;
                 else if (contact.MailingList == "Unsubscribed") c.Issubscribe = false;
@@ -238,36 +204,98 @@ namespace BusinessAccess.Repository
             }
             if (contact.Id == 0) _db.Add(contact);
             else _db.Update(contact);
-            _db.Contacts.Where(x => x.CustomerId == contact.CustomerId && !x.Isdelete && x.Email == contact.Email).ToList().ForEach(x => { x.MailingList = contact.MailingList; });
-            _db.SaveChanges();
+            await _db.Contacts.Where(x => x.CustomerId == contact.CustomerId && !x.Isdelete && x.Email == contact.Email).ForEachAsync(x => { x.MailingList = contact.MailingList; });
+            await _db.SaveChangesAsync();
             return contact.Id;
         }
 
-        public Contact GetContactDataById(int contactid)
+        public async Task<ContactViewModel> GetContactDataById(int contactId)
         {
-            Contact c = _db.Contacts.FirstOrDefault(x => x.Id == contactid && !x.Isdelete) ?? new Contact();
-            return new Contact
+            return GetContactModel(await _db.Contacts.FirstOrDefaultAsync(x => x.Id == contactId && !x.Isdelete) ?? new Contact());
+        }
+
+        public async Task<List<ContactViewModel>> GetContactListCustomer(int customerId, string search)
+        {
+            return await _db.Contacts.Where(x => !x.Isdelete && x.CustomerId == customerId && (search == null || x.Name.Trim().ToLower().Contains(search.Trim().ToLower())))
+                .OrderBy(x => search == null ? x.Name : (x.Name.Trim().ToLower().IndexOf(search.Trim().ToLower()) != -1 ? x.Name.Trim().ToLower().IndexOf(search.Trim().ToLower()).ToString() : int.MaxValue.ToString()))
+                .ThenBy(x => x.Name)
+                .Select(contact => GetContactModel(contact)).ToListAsync();
+        }
+
+        public async Task DeletthisContact(int contactId)
+        {
+            Contact contact = await _db.Contacts.FirstOrDefaultAsync(x => x.Id == contactId && !x.Isdelete) ?? new Contact();
+            if (contact.Id != 0) contact.Isdelete = true;
+            _db.SaveChanges();
+        }
+
+        public CustomerDetailViewModel GetCustomerModel(Customer customer)
+        {
+            return new()
             {
-                Id = c != null ? c.Id : 0,
-                Username = c != null ? c.Username : "",
-                Name = c != null ? c.Name : "",
-                Telephone = c != null ? c.Telephone : "",
-                Email = c != null ? c.Email : "",
-                MailingList = c != null ? c.MailingList : ""
+                Name = customer.Name,
+                Postcode = customer.Postcode ?? string.Empty,
+                Country = customer.Country ?? string.Empty,
+                Telephone = customer.Telephone ?? string.Empty,
+                Relation = customer.Relation ?? string.Empty,
+                Currency = customer.Currency ?? string.Empty,
+                Address1 = customer.Address1 ?? string.Empty,
+                Address2 = customer.Address2 ?? string.Empty,
+                Town = customer.Town ?? string.Empty,
+                County = customer.County ?? string.Empty,
+                Email = customer.Email ?? string.Empty,
+                Issubscribe = customer.Issubscribe,
+                Ac = customer.Ac ?? string.Empty,
+                Id = customer.Id
             };
         }
 
-        public List<Contact> GetContactListOfCustomer(int customerId, string search)
+        public Customer GetTableCustomer(CustomerDetailViewModel customer)
         {
-            if (search != null)
-                return _db.Contacts.Where(x => !x.Isdelete && x.CustomerId == customerId && x.Name.Trim().ToLower().Contains(search.Trim().ToLower())).OrderBy(x => x.Name.Trim().ToLower().IndexOf(search.Trim().ToLower()) != -1 ? x.Name.Trim().ToLower().IndexOf(search.Trim().ToLower()) : int.MaxValue).ThenBy(x => x.Name).ToList();
-            return _db.Contacts.Where(x => !x.Isdelete && x.CustomerId == customerId).ToList();
+            return new()
+            {
+                Name = customer.Name,
+                Postcode = customer.Postcode,
+                Country = customer.Country,
+                Telephone = customer.Telephone,
+                Relation = customer.Relation,
+                Currency = customer.Currency,
+                Address1 = customer.Address1,
+                Address2 = customer.Address2,
+                Town = customer.Town,
+                County = customer.County,
+                Email = customer.Email,
+                Ac = customer.Ac,
+                Id = customer.Id,
+                Isdelete = false
+            };
         }
 
-        public void DeletthisContact(int contactid)
+        private static ContactViewModel GetContactModel(Contact contact)
         {
-            _db.Contacts.First(x => x.Id == contactid).Isdelete = true;
-            _db.SaveChanges();
+            return new()
+            {
+                Id = contact.Id,
+                Username = contact.Username,
+                Name = contact.Name,
+                Telephone = contact.Telephone,
+                Email = contact.Email,
+                MailingList = contact.MailingList,
+                Isdelete = contact.Isdelete,
+                CustomerId = contact.CustomerId,
+            };
+        }
+
+        private static GroupViewModel GetGroupViewModel(Group group)
+        {
+            return new()
+            {
+                Id = group.Id,
+                Name = group.Name,
+                Isdelete = group.Isdelete,
+                Isselect = group.Isselect,
+                CustomerId = group.CustomerId,
+            };
         }
     }
 }

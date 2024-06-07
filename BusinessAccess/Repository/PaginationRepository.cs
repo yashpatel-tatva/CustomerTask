@@ -8,7 +8,6 @@ namespace BusinessAccess.Repository
     {
         public PageFilterResponseDTO<T> GetPagedData(List<T> entity, PageFilterRequestDTO<U> pageFilterDTO)
         {
-
             PageFilterResponseDTO<T> pageFilterResponseDTO = new()
             {
                 TotalColumn = typeof(T).GetProperties().Length,
@@ -17,21 +16,19 @@ namespace BusinessAccess.Repository
                 OrderColumnName = pageFilterDTO.OrderByColumnName,
                 OrderBy = pageFilterDTO.OrderBy
             };
+            PropertyInfo[] SearchProperties = typeof(T).GetProperties();
 
-            PropertyInfo[] searchProperties = typeof(T).GetProperties();
-
-            /// searching from key
-            string? searchValue = pageFilterDTO.search?.ToLower();
-
+            /// Searching from key
+            string? SearchValue = pageFilterDTO.Search?.ToLower();
             List<T> list = new();
-            if (!string.IsNullOrEmpty(searchValue))
+            if (!string.IsNullOrEmpty(SearchValue))
             {
-                foreach (var entityProperty in searchProperties)
+                foreach (PropertyInfo entityProperty in SearchProperties)
                 {
                     if (entityProperty.Name == "Id")
                         continue;
-                    list = list.Union(entity.Where(e => (bool)(entityProperty.GetValue(e)?.ToString().ToLower().Contains(searchValue)))
-                                    .OrderBy(e => entityProperty.GetValue(e)?.ToString().IndexOf(searchValue) ?? int.MaxValue)
+                    list = list.Union(entity.Where(e => (entityProperty.GetValue(e)?.ToString().ToLower().Contains(SearchValue) ?? false))
+                                    .OrderBy(e => entityProperty.GetValue(e)?.ToString().IndexOf(SearchValue) ?? int.MaxValue)
                                     .ThenBy(e => entityProperty.GetValue(e)?.ToString())
                                     .ToList()).ToList();
                 }
@@ -42,27 +39,24 @@ namespace BusinessAccess.Repository
             }
             entity = list;
 
-
-
-
             /// Searching from filter
-            var searchColumns = pageFilterDTO.SearchByColumns;
+            U SearchColumns = pageFilterDTO.SearchByColumns;
 
-            if (searchColumns != null)
+            if (SearchColumns != null)
             {
-                var columnProperties = searchColumns.GetType().GetProperties();
+                PropertyInfo[] columnProperties = SearchColumns.GetType().GetProperties();
 
-                foreach (var columnProperty in columnProperties)
+                foreach (PropertyInfo columnProperty in columnProperties)
                 {
-                    var thissearchValue = columnProperty.GetValue(searchColumns)?.ToString().ToLower();
-                    if (!string.IsNullOrEmpty(thissearchValue))
+                    string? thisSearchValue = columnProperty.GetValue(SearchColumns)?.ToString().ToLower();
+                    if (!string.IsNullOrEmpty(thisSearchValue))
                     {
-                        var entityProperty = searchProperties.FirstOrDefault(p => p.Name == columnProperty.Name);
+                        PropertyInfo entityProperty = SearchProperties.FirstOrDefault(p => p.Name == columnProperty.Name);
                         if (entityProperty != null)
                         {
                             entity = entity
-                                .Where(e => (bool)(entityProperty.GetValue(e)?.ToString().ToLower().Contains(thissearchValue)))
-                                .OrderBy(e => entityProperty.GetValue(e)?.ToString().IndexOf(thissearchValue) ?? int.MaxValue)
+                                .Where(e => (bool)(entityProperty.GetValue(e)?.ToString().ToLower().Contains(thisSearchValue)))
+                                .OrderBy(e => entityProperty.GetValue(e)?.ToString().IndexOf(thisSearchValue) ?? int.MaxValue)
                                 .ThenBy(e => entityProperty.GetValue(e)?.ToString())
                                 .ToList();
                         }
@@ -71,14 +65,14 @@ namespace BusinessAccess.Repository
             }
 
             /// Info Of Pages
-            var pages = (decimal)entity.Count / (decimal)pageFilterDTO.pagesize;
+            decimal pages = (decimal)entity.Count / (decimal)pageFilterDTO.pagesize;
             pageFilterResponseDTO.TotalPage = (int)Math.Ceiling(pages);
             pageFilterResponseDTO.TotalRecords = entity.Count;
 
             /// Sorting
             if (pageFilterDTO.OrderByColumnName != null)
             {
-                var propertyInfo = typeof(T).GetProperty(pageFilterDTO.OrderByColumnName);
+                PropertyInfo propertyInfo = typeof(T).GetProperty(pageFilterDTO.OrderByColumnName);
 
                 if (propertyInfo != null)
                 {

@@ -1,14 +1,14 @@
 ﻿@using DataAccess.DataViewModel;
 @model GroupAndSuppliersViewModel
 
-<input type="hidden" value="@Model.GroupName" id="groupname" />
-<input type="hidden" value="@Model.GroupId" id="groupid" />
+<input type="hidden" value="@Model.GroupName" id="Groupname" />
+<input type="hidden" value="@Model.GroupId" id="groupId" />
 <div class="" style="width : 95% !important">
     @foreach(var supplier in Model.SupplierOfGroup)
     {
         <div class="d-flex row">
             <div class="col-4">
-                <input type="checkbox" name="supplierofgroup" id="supp_@supplier.Id" value="@supplier.Id" checked/>
+                <input type="checkbox" name="supplierofGroup" id="supp_@supplier.Id" value="@supplier.Id" checked/>
             </div>
             <div class="col-8">
                 <label for="supp_@supplier.Id">@supplier.Name</label>

@@ -4,7 +4,7 @@
 }
 @model CustomerGroupViewModel
 @{
-    Contact nullcontact = new Contact
+    Contact nullContact = new Contact
             {
                 Id = 0,
                 Name = "",
@@ -14,7 +14,7 @@
                 MailingList = "",
                 Isdelete = false,
             };
-    Contact firstcontact = Model.Contacts.FirstOrDefault() ?? nullcontact;
+    Contact firstContact = Model.Contacts.FirstOrDefault() ?? nullContact;
 }
 <style>
     td:nth-child(2n) {
@@ -36,62 +36,62 @@
                             <input type="hidden" name="Id" value="@Model.CustomerId" />
                             <input type="text" class="invoiceedit" name="Ac" value="@Model.Ac" readonly id="acdrop" />
                         </td>
-                        <td><span name="Ac" class="text-danger h6 mb-0"></span></td>
+                        <td><span name="Ac" class="text-danger h6 mb-0 editerror"></span></td>
                     </tr>
                     <tr>
                         <td>Company</td>
                         <td><input type="text" class="invoiceedit" name="Name" id="company" readonly /></td>
-                        <td><span name="Name" class="text-danger h6 mb-0"></span></td>
+                        <td><span name="Name" class="text-danger h6 mb-0 editerror"></span></td>
                     </tr>
                     <tr>
                         <td>Address1</td>
                         <td><input type="text" class="invoiceedit" name="Address1" id="address1" readonly /></td>
-                        <td><span name="Address1" class="text-danger h6 mb-0"></span></td>
+                        <td><span name="Address1" class="text-danger h6 mb-0 editerror"></span></td>
                     </tr>
                     <tr>
                         <td>Address2</td>
                         <td><input type="text" class="invoiceedit" name="Address2" id="address2" readonly /></td>
-                        <td><span name="Address2" class="text-danger h6 mb-0"></span></td>
+                        <td><span name="Address2" class="text-danger h6 mb-0 editerror"></span></td>
                     </tr>
                     <tr>
                         <td>Town</td>
                         <td><input type="text" class="invoiceedit" name="Town" id="town" readonly /></td>
-                        <td><span name="Town" class="text-danger h6 mb-0"></span></td>
+                        <td><span name="Town" class="text-danger h6 mb-0 editerror"></span></td>
                     </tr>
                     <tr>
                         <td>County</td>
                         <td><input type="text" class="invoiceedit" name="County" id="county" readonly /></td>
-                        <td><span name="County" class="text-danger h6 mb-0"></span></td>
+                        <td><span name="County" class="text-danger h6 mb-0 editerror"></span></td>
                     </tr>
                     <tr>
                         <td>Postcode</td>
                         <td><input type="text" class="invoiceedit" name="Postcode" id="postcode" readonly /></td>
-                        <td><span name="Postcode" class="text-danger h6 mb-0"></span></td>
+                        <td><span name="Postcode" class="text-danger h6 mb-0 editerror"></span></td>
                     </tr>
                     <tr>
                         <td>Country</td>
                         <td><input type="text" class="invoiceedit" name="Country" id="country" readonly /></td>
-                        <td><span name="Country" class="text-danger h6 mb-0"></span></td>
+                        <td><span name="Country" class="text-danger h6 mb-0 editerror"></span></td>
                     </tr>
                     <tr>
                         <td>Telephone</td>
                         <td><input type="text" class="invoiceedit" name="Telephone" id="telephone" readonly /></td>
-                        <td><span name="Telephone" class="text-danger h6 mb-0"></span></td>
+                        <td><span name="Telephone" class="text-danger h6 mb-0 editerror"></span></td>
                     </tr>
                     <tr>
                         <td>Email</td>
                         <td><input type="text" class="invoiceedit" name="Email" id="email" readonly /></td>
-                        <td><span name="Email" class="text-danger h6 mb-0"></span></td>
+                        <td><span name="Email" class="text-danger h6 mb-0 editerror"></span></td>
                     </tr>
                     <tr class="d-none addfield">
                         <td>Relation</td>
                         <td><input type="text" class="invoiceedit" name="Relation" id="relation" /></td>
-                        <td><span name="Relation" class="text-danger h6 mb-0"></span></td>
+                        <td><span name="Relation" class="text-danger h6 mb-0 editerror"></span></td>
                     </tr>
                     <tr class="d-none addfield">
                         <td>Currency</td>
                         <td><input type="text" class="invoiceedit" name="Currency" id="currency" /></td>
-                        <td><span name="Currency" class="text-danger h6 mb-0"></span></td>
+                        <td><span name="Currency" class="text-danger h6 mb-0 editerror"></span></td>
                     </tr>
 
                     <tr>
@@ -99,7 +99,7 @@
                         <td>
                             <div class="position-relative" style="z-index: 1;">
                                 <span class=""><input id="mailinglist" class="border-bottom border-secondary  readonly" value="" readonly /></span>
-                                <div class="position-absolute  w-50" id="maillistinvoicedrop">
+                                <div class="position-absolute" style="width : 257px !important" id="maillistinvoicedrop">
                                     <div class="border border-2 rounded-2">
                                         <div class="w-100 d-flex justify-content-between p-2 rounded-2" style="background: linear-gradient(to bottom, #4777ae, #48607b);">
                                             <div class="text-white">
@@ -112,10 +112,10 @@
                                         <div class="p-2 bg-light">
 
                                             <div class="d-flex gap-3">
-                                                <input type="checkbox" name="Issubscribe" id="sub" value="Subscribed" /> <label for="sub">Subscribe</label>
+                                                <input type="checkbox" name="IssubscribeInvoice" id="sub" value="Subscribed" /> <label for="sub">Subscribe</label>
                                             </div>
                                             <div class="d-flex gap-3">
-                                                <input type="checkbox" name="Issubscribe" id="unsub" value="Unsubscribed" /> <label for="unsub">Unsubscribe</label>
+                                                <input type="checkbox" name="IssubscribeInvoice" id="unsub" value="Unsubscribed" /> <label for="unsub">Unsubscribe</label>
                                             </div>
                                         </div>
                                     </div>
@@ -124,7 +124,6 @@
                         </td>
                     </tr>
                     </form>
-
                     <tr>
                         <td>Group</td>
                         <td class="border-bottom w-50">
@@ -143,11 +142,11 @@
                                     <span><strong>@Model.GroupName</strong> + @c more......</span>
                                 }
                             </button>
-                            <div class="position-relative bg-white mt-1" id="editgroupmodel" style="z-index : 1"></div>
+                            <div class="position-relative bg-white mt-1" id="editGroupmodel" style="z-index : 1"></div>
                             <div id="saveandcancelinvoice" class="d-none p-2">
                                 <div class="d-flex justify-content-start gap-3">
                                     <button class="bg-success border-0 px-3 text-white rounded-pill addeditthiscustomer" role="button" id="addsubmit">Save</button>
-                                    <button class="bg-light border-0 px-3 rounded-pill text-secondary" role="button" onclick="location.reload()">Cancel</button>
+                                    <button class="bg-light border-0 px-3 rounded-pill text-secondary" role="button"  onclick="setinputfieldreadonly()">Cancel</button>
                                 </div>
                             </div>
                         </td>
@@ -156,66 +155,71 @@
             </div>
         </div>
         <div class="col-xl-6 border-1" style="border :0.5px solid #6A7179">
-            <div class="w-100 p-1 fw-bold" style="background-color: #F7F9FA ; font-size: 1.25rem"><i class="fa-solid fa-address-book"></i> Contact Information <i class="fa-solid fa-pencil editcontact"></i></div>
+            <div class="w-100 p-1 fw-bold" style="background-color: #F7F9FA ; font-size: 1.25rem"><i class="fa-solid fa-address-book"></i> Contact Information <i class="fa-solid fa-pencil editContact"></i></div>
             <div class="table-responsive" style="height:90%">
-                <input type="hidden" id="firstcontactid" value="@firstcontact.Id" />
-                <input type="hidden" id="contactid" value="@firstcontact.Id" />
+                <input type="hidden" id="firstcontactId" value="@firstContact.Id" />
+                <input type="hidden" id="contactId" value="@firstContact.Id" />
                 <table class="table ps-3">
                     <tr>
                         <td>Full Name</td>
                         <td>
                             <div class="position-relative">
-                                <span class=""><input id="fullname" class="border-bottom border-secondary disable" value="@firstcontact.Name" readonly /></span>
-                                <div class="position-absolute  w-50 bg-white" id="contactsdrop">
+                                <span class=""><input id="fullname" class="border-bottom border-secondary disable" value="@firstContact.Name" readonly autocomplete="off"/></span>
+                                <div class="position-absolute  bg-white" style="width : 257px !important" id="Contactsdrop">
                                     <div class="border border-2 rounded-2">
                                         <div class="w-100 d-flex justify-content-between p-2 rounded-2" style="background: linear-gradient(to bottom, #4777ae, #48607b);">
                                             <div class="rounded">
-                                                <button class="rounded border-0 bg-white addcontactbtn" style="color:#48607b" onclick="openedit(0)">
+                                                <button class="rounded border-0 bg-white addContactbtn" style="color:#48607b ; display : none" onclick="openedit(0)">
                                                     <i class="fa-solid fa-plus"></i>
                                                 </button>
                                             </div>
                                             <div>
-                                                <button class="rounded border-0 bg-white" onclick="document.getElementById('contactsdrop').style.display = 'none';">
+                                                <button class="rounded border-0 bg-white" onclick="document.getElementById('Contactsearch').value = '' ; getContactlist('')"><i class="fa-solid fa-broom"></i></button>
+                                                <button class="rounded border-0 bg-white" onclick="document.getElementById('Contactsdrop').style.display = 'none';">
                                                     <i class="fa-solid fa-xmark"></i>
                                                 </button>
                                             </div>
                                         </div>
                                         <div class="p-3 ">
-                                            <div class="form-group rounded">
-                                                <input type="text" id="contactsearch" class="w-100 p-2 form-control" /><span>Search</span>
+                                            <div class="form-Group rounded">
+                                                <input type="search" id="Contactsearch" class="w-100 p-2 form-control" /><span>search</span>
                                             </div>
 
-                                            <div><span id="contactnumberinfo"></span></div>
+                                            <div><span id="Contactnumberinfo"></span></div>
 
                                             <div class="my-2 p-2 w-100  d-flex justify-content-between" style="background-color : #e2e3e3">
                                                 <div class="">Name</div>
                                             </div>
-                                            <div class="contactlist p-2">
+                                            <div class="Contactlist p-2">
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </td>
+                        <td><label name="fullname" class="text-danger err"></label></td>
                     </tr>
                     <tr>
-                        <td>"Dear" <span id="fullnamespan">@firstcontact.Name</span></td>
-                        <td><span class=""><input id="username" class="border-bottom border-secondary disable" value="@firstcontact.Username" readonly /></span></td>
+                        <td>"Dear" <span id="fullnamespan">@firstContact.Name</span></td>
+                        <td><span class=""><input id="username" class="border-bottom border-secondary disable" value="@firstContact.Username" readonly /></span></td>
+                        <td><label name="username" class="text-danger err"></label></td>
                     </tr>
                     <tr>
                         <td>Telephone</td>
-                        <td><span class=""><input id="contacttelephone" class="border-bottom border-secondary disable" value="@firstcontact.Telephone" readonly /></span></td>
+                        <td><span class=""><input id="Contacttelephone" class="border-bottom border-secondary disable" value="@firstContact.Telephone" readonly /></span></td>
+                        <td><label name="telephone" class="text-danger err"></label></td>
                     </tr>
                     <tr>
                         <td>Email</td>
-                        <td><span class=""><input id="contactemail" class="border-bottom border-secondary disable" value="@firstcontact.Email" readonly /></span></td>
+                        <td><span class=""><input id="Contactemail" class="border-bottom border-secondary disable" value="@firstContact.Email" readonly /></span></td>
+                        <td><label name="email" class="text-danger err"></label></td>
                     </tr>
                     <tr>
                         <td>Mailing List</td>
                         <td>
                             <div class="position-relative">
-                                <span class=""><input id="issubscribeornot" class="border-bottom border-secondary disable readonly" value="@firstcontact.MailingList" readonly /></span>
-                                <div class="position-absolute  w-50" id="maillistdrop">
+                                <span class=""><input id="issubscribeornot" class="border-bottom border-secondary disable readonly" value="@firstContact.MailingList" readonly /></span>
+                                <div class="position-absolute" style="width : 257px !important" id="maillistdrop">
                                     <div class="border border-2 rounded-2">
                                         <div class="w-100 d-flex justify-content-between p-2 rounded-2" style="background: linear-gradient(to bottom, #4777ae, #48607b);">
                                             <div class="text-white">
@@ -231,14 +235,14 @@
 
                                             <div class="d-flex gap-3">
                                                 <input type="checkbox" name="issubscribe" value="Subscribed" id="subcon"
-                                                @if (firstcontact.MailingList == "Subscribed")
+                                                @if (firstContact.MailingList == "Subscribed")
                                                 {
                                                     @: checked
                                                 } /> <label for="subcon">Subscribe</label>
                                             </div>
                                             <div class="d-flex gap-3">
                                                 <input type="checkbox" name="issubscribe" value="Unsubscribed" id="unsubcon"
-                                                @if (firstcontact.MailingList == "Unsubscribed")
+                                                @if (firstContact.MailingList == "Unsubscribed")
                                                 {
                                                     @: checked
                                                 } /> <label for="unsubcon">Unsubscribe</label>
@@ -249,12 +253,12 @@
                             </div>
                         </td>
                     </tr>
-                    <tr class="savecancelcontact d-none">
+                    <tr class="savecancelContact d-none">
                         <td></td>
                         <td>
                             <div>
                                 <div class="d-flex justify-content-start gap-3">
-                                    <button class="bg-success border-0 px-3 text-white rounded-pill addthiscontact">Save</button>
+                                    <button class="bg-success border-0 px-3 text-white rounded-pill AddCustomerContact">Save</button>
                                     <button class="bg-light border-0 px-3 rounded-pill text-secondary" onclick="closeedit()">Cancel</button>
                                 </div>
                             </div>
@@ -265,8 +269,17 @@
         </div>
     </div>
 }
+else
+{
+    <div class="d-flex justify-content-center align-items-center">
+        <img src="~/res/norecordfound.gif" width="50%"/>
+    </div>
+    <script>
+        document.getElementById('dc').style.display = 'none';
+    </script>
+}
 <input type="hidden" id="thisid" />
-<div id="addgroupmodel"></div>
+<div id="addGroupmodel"></div>
 
 <style>
     tr, td {
@@ -321,6 +334,15 @@
         transition: 1s ease-in;
     }
 
+    input[type="checkbox" i]:disabled {
+        background-color: lightblue;
+        color: lightblue;
+    }
+
+    .form-check-input:checked {
+        background-color: #0dcaf0 !important;
+        border-color: #0dcaf0 !important;
+    }
 </style>
 
 

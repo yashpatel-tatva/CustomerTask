@@ -1,11 +1,11 @@
 ﻿
 var id = $('input[name="Id"]').val();
 $('input[name="Ac"]').on('blur', function () {
-    acno = $('input[name="Ac"]').val();
+    acNo = $('input[name="Ac"]').val();
 
     $.ajax({
         url: '/Home/CheckACExist',
-        data: { id, acno },
+        data: { id, acNo },
         type: 'POST',
         success: function (res) {
             if (res) {
@@ -24,7 +24,6 @@ $('input[name="Ac"]').on('blur', function () {
 
 $('input[name="Name"]').on('blur', function () {
     var name = $('input[name="Name"]').val();
-    console.log($('#isedit').val());
     $.ajax({
         url: '/Home/CheckCompanyNameExist',
         data: { id, name },
@@ -55,7 +54,7 @@ $('#addsubmit').on('click', function () {
 
     if (valid) {
         $.ajax({
-            url: '/Home/AddCustomer',
+            url: '/Home/UpSertCustomer',
             data: form.serialize(),
             type: 'POST',
             success: function (res) {
@@ -66,15 +65,17 @@ $('#addsubmit').on('click', function () {
                     showConfirmButton: false,
                     timer: 1500
                 });
-                var acno = $('input[name="Ac"]').val();
-
-
-                var link = document.createElement('a');
-                link.href = '/Home/DetailOfCustomer?acno=' + acno;
-                setTimeout(function () {
-
-                    link.click();
-                }, 1000)
+                acNo = $('input[name="Ac"]').val();
+                if (id == 0) {
+                    var link = document.createElement('a');
+                    link.href = '/Home/DetailOfCustomer?acNo=' + acNo;
+                    setTimeout(function () {
+                        link.click();
+                    }, 1000)
+                }
+                setinputfieldreadonly();
+                var contactid = $(document).find('.editthisContact').data('id');
+                getdataofContact(contactid) 
             },
             error: function (error) {
                 Swal.fire("Form Is InValid")
@@ -86,15 +87,14 @@ $('#addsubmit').on('click', function () {
     }
 })
 
-function checkacexist(acno) {
+function checkacexist(acNo) {
     var isexists = true;
     $.ajax({
         url: '/Home/CheckACExist',
-        data: { acno },
+        data: { acNo },
         type: 'POST',
         success: function (res) {
             isexists = res;
-            console.log(isexists)
             return isexists;
         }
     })
@@ -167,4 +167,17 @@ function formvalid() {
         $('span[name="Ac"]').text("Ac must start with two uppercase letters followed by five digits.");
     } else { $('span[name="Ac"]').text("") }
     return valid;
+}
+
+function setinputfieldreadonly() {
+    $('.invoiceedit').prop('readonly', true);
+    $('#saveandcancelinvoice').addClass('d-none');
+    $('#mailinglist').addClass('readonly');
+    $('.addfield').addClass('d-none')
+    $('#OpenGroupDialog').val('false')
+    document.getElementById('editGroupmodel').style.display = 'none';
+    const urlParams = new URLSearchParams(window.location.search);
+    const acNo = urlParams.get('acNo');
+    putdata(acNo)
+    $('.editerror').text('');
 }

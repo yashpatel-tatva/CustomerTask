@@ -135,14 +135,14 @@ input[type="search"] {
 
 
 
-.form-group {
+.form-Group {
     position: relative;
     /* border: 1px solid; */
     border: 1px solid darkgray;
     overflow: hidden;
 }
 
-    .form-group input {
+    .form-Group input {
         width: 100%;
         outline: none;
         border: 0;
@@ -152,7 +152,7 @@ input[type="search"] {
     }
 
 
-    .form-group span {
+    .form-Group span {
         position: absolute;
         left: 10px;
         top: 9px;
@@ -190,7 +190,7 @@ input:not(:placeholder-shown) + span {
 }
 
 
-.form-group:focus-within {
+.form-Group:focus-within {
     border: 1px solid #8db2db;
 }
 
@@ -244,7 +244,7 @@ input:not(:placeholder-shown) + span {
 }
 
 
-/*.editgroupdialog[open] {
+/*.editGroupdialog[open] {
     transform: translateY(-100%);
 }*/
 
@@ -276,7 +276,7 @@ input:not(:placeholder-shown) + span {
     }
 }
 
-#maillistdrop, #maillistinvoicedrop, #contactsdrop, #editgroupmodel {
+#maillistdrop, #maillistinvoicedrop, #Contactsdrop, #editGroupmodel {
     animation: pendulum 0.5s ease-in-out 1;
     transform-origin: top center;
     display: none;

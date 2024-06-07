@@ -1,18 +1,18 @@
-﻿var customerid = $('#thiscustomerid').val()
-var search = $('#groupsearch').val();
+﻿var customerId = $('#thiscustomerId').val()
+var search = $('#Groupsearch').val();
 
-getgroups(customerid, search);
+getGroups(customerId, search);
 
 
-$('.addgroupbtn').on('click', function () {
-    var customerid = $('#thisid').val();
-    var groupid = 0;
+$('.addGroupbtn').on('click', function () {
+    var customerId = $('#thisid').val();
+    var groupId = 0;
     $.ajax({
         url: '/Home/AddGroupModal',
-        data: { customerid, groupid },
+        data: { customerId, groupId },
         type: 'POST',
         success: function (res) {
-            $('#addgroupmodel').html(res)
+            $('#addGroupmodel').html(res)
             document.getElementById('addgroupdialog').show();
 
         }
@@ -20,66 +20,66 @@ $('.addgroupbtn').on('click', function () {
 })
 
 $(document).on('click', '.deletethisgroup', function () {
-    var customerid = $('#thiscustomerid').val();
-    var groupid = $(this).data('id');
+    var customerId = $('#thiscustomerId').val();
+    var groupId = $(this).data('id');
     $.ajax({
-        url: '/Home/DeleteGroupFromCustomer',
-        data: { customerid, groupid },
+        url: '/Home/DeleteGroupCustomer',
+        data: { customerId, groupId },
         type: 'POST',
         success: function (res) {
-            $('#editgroupmodel').html(res);
+            $('#editGroupmodel').html(res);
             Toast.fire({
                 icon: "success",
                 title: "Group Removed"
-            });            putdata(acno)
+            });            putdata(acNo)
         }
     })
 })
 
 $(document).on('click', '.editthisgroup', function () {
-    var customerid = $('#thisid').val();
-    var groupid = $(this).data('id');
+    var customerId = $('#thisid').val();
+    var groupId = $(this).data('id');
     $.ajax({
         url: '/Home/AddGroupModal',
-        data: { customerid, groupid },
+        data: { customerId, groupId },
         type: 'POST',
         success: function (res) {
-            $('#addgroupmodel').html(res)
-            document.getElementById('addgroupdialog').show(); putdata(acno)
+            $('#addGroupmodel').html(res)
+            document.getElementById('addgroupdialog').show(); putdata(acNo)
         }
     })
 })
 
 $('.cancelsupplier').on('click', function () {
-    $('.groupdetail').html('');
-    $('.grouplist').removeClass('d-none');
+    $('.Groupdetail').html('');
+    $('.Grouplist').removeClass('d-none');
     $('.infoofmodal').html('Name')
     $('.savecancel').addClass('d-none');
-    $('.groupdetail').addClass('d-none');
+    $('.Groupdetail').addClass('d-none');
 })
 
 $('.savesupplier').on('click', function () {
-    var removefromgroup = []
-    var addtogroup = []
-    var groupid = $('#groupid').val();
-    $('input[name="supplierofgroup"]:not(:checked)').each(function () {
+    var removeFromGroup = []
+    var addToGroup = []
+    var groupId = $('#groupId').val();
+    $('input[name="supplierofGroup"]:not(:checked)').each(function () {
         var id = $(this).val();
-        removefromgroup.push(id);
+        removeFromGroup.push(id);
     });
     $('input[name="nullsupplier"]:checked').each(function () {
         var id = $(this).val();
-        addtogroup.push(id);
+        addToGroup.push(id);
     });
     $.ajax({
         url: '/Home/EditSupplierinGroup',
-        data: { groupid, removefromgroup, addtogroup },
+        data: { groupId, removeFromGroup, addToGroup },
         type: 'POST',
         success: function () {
-            $('.groupdetail').html('');
-            $('.grouplist').removeClass('d-none');
+            $('.Groupdetail').html('');
+            $('.Grouplist').removeClass('d-none');
             $('.infoofmodal').html('Name')
             $('.savecancel').addClass('d-none');
-            $('.groupdetail').addClass('d-none');
+            $('.Groupdetail').addClass('d-none');
         }
     })
 })
@@ -88,8 +88,8 @@ $('.savesupplier').on('click', function () {
 function closeeditmodal() {
     var adddialog = document.getElementById('addgroupdialog');
     if (adddialog == null) {
-        document.getElementById('editgroupdialog').remove();
-        document.getElementById('editgroupmodel').style.display = 'none';
+        document.getElementById('editGroupdialog').remove();
+        document.getElementById('editGroupmodel').style.display = 'none';
     }
     else if (adddialog.open) {
         adddialog.classList.add('shake');
@@ -98,48 +98,47 @@ function closeeditmodal() {
             adddialog.classList.remove('shake');
         },1000)
     } else {
-        document.getElementById('editgroupdialog').remove();
-        document.getElementById('editgroupmodel').style.display = 'none';
+        document.getElementById('editGroupdialog').remove();
+        document.getElementById('editGroupmodel').style.display = 'none';
     }
 }
 
 
-$('#groupsearch').on('input', function () {
-    if ($('.groupdetail').hasClass('d-none')) {
-        var search = $('#groupsearch').val();
-        getgroups(customerid, search);
+$('#Groupsearch').on('input', function () {
+    if ($('.Groupdetail').hasClass('d-none')) {
+        var search = $('#Groupsearch').val();
+        getGroups(customerId, search);
     }
     else {
-        var groupid = $('#groupid').val();
-        var search = $('#groupsearch').val();
-        getsuppliers(groupid, search);
+        var groupId = $('#groupId').val();
+        var search = $('#Groupsearch').val();
+        getsuppliers(groupId, search);
     }
 })
 
-function getsuppliers(groupid, search) {
+function getsuppliers(groupId, search) {
     $.ajax({
         url: '/Home/GroupSupplierModel',
-        data: { groupid, search },
+        data: { groupId, search },
         type: 'POST',
         success: function (res) {
-            $('.groupdetail').html(res);
-            $('.grouplist').addClass('d-none');
-            $('.infoofmodal').html($('#groupname').val())
+            $('.Groupdetail').html(res);
+            $('.Grouplist').addClass('d-none');
+            $('.infoofmodal').html($('#Groupname').val())
             $('.savecancel').removeClass('d-none');
-            $('.groupdetail').removeClass('d-none');
+            $('.Groupdetail').removeClass('d-none');
         }
     })
 }
 
-function getgroups(customerid, search) {
-    customerid = parseInt(customerid)
-    console.log(isedit)
+function getGroups(customerId, search) {
+    customerId = parseInt(customerId)
     $.ajax({
         url: '/Home/CustomerGroupData',
-        data: { customerid, search , isedit},
+        data: { customerId, search , isEdit},
         type: 'POST',
         success: function (res) {
-            $('.grouplist').html(res);
+            $('.Grouplist').html(res);
         }
     })
 }
@@ -148,7 +147,7 @@ function clearfilter() {
     $('input[name="groupin"]').prop('checked', false);
     $.ajax({
         url: '/Home/UnSelectAllGroupInCustomer',
-        data: { customerid },
+        data: { customerId },
         type: 'POST',
         success: function () {
             Toast.fire({
@@ -160,16 +159,15 @@ function clearfilter() {
     })
 }
 $(document).on('change', 'input[name="groupin"]', function () {
-    //console.log("her");
-    var groupid = $(this).val();
+    var groupId = $(this).val();
     var gname = $(this).data('name')
-    var isselect = $(this).is(":checked");
+    var isSelect = $(this).is(":checked");
     $.ajax({
         url: '/Home/SelectGroupInCustomer',
-        data: { groupid, isselect },
+        data: { groupId, isSelect },
         type: 'POST',
         success: function () {
-            if (isselect) {
+            if (isSelect) {
                 Toast.fire({
                     icon: "success",
                     title: gname + " Add in selection"

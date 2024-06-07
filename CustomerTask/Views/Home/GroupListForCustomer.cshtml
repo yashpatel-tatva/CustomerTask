@@ -1,23 +1,32 @@
-﻿@model List<Group>
+﻿@using DataAccess.DataViewModel;
+@model List<GroupViewModel>
 @{
-    bool isedit = ViewBag.isedit;
+    bool isEdit;
+    if (ViewBag.isEdit != null)
+    {
+        isEdit = ViewBag.isEdit;
+    }
+    else
+    {
+        isEdit = true;
+    }
 }
 @foreach (var group in Model)
 {
     <div class="d-flex justify-content-between">
         <div>
-            <input type="checkbox" class="form-check-inline" name="groupin" value="@group.Id" data-name="@group.Name"
+            <input type="checkbox" class="form-check-input" name="groupin" value="@group.Id" data-name="@group.Name"
             @if (group.Isselect)
             {
                 @: checked
-            } 
-            @if (!isedit)
+            }
+            @if (!isEdit)
             {
                 @: disabled
             } />
             @group.Name
         </div>
-        @if (isedit)
+        @if (isEdit)
         {
             <div class="d-flex gap-2">
                 <i class="fa-solid fa-pen editthisgroup" data-id="@group.Id" style="color : #920472!important"></i>
@@ -44,7 +53,7 @@
 }
 
 <script>
-    $('#OpenGroupDialog').text("@text");
+    $('#OpengroupDialog').text("@text");
 </script>
 
 

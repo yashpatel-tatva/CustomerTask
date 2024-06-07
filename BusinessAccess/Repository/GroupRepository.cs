@@ -1,6 +1,8 @@
 ﻿using BusinessAccess.Repository.IRepository;
 using CustomerTask;
+using DataAccess.DataViewModel;
 using DataAccess.Repository;
+using Microsoft.EntityFrameworkCore;
 
 namespace BusinessAccess.Repository
 {
@@ -10,18 +12,18 @@ namespace BusinessAccess.Repository
         {
         }
 
-        public void EditSupplierinGroup(int groupid, List<int> removefromgroup, List<int> addtogroup)
+        public void EditSupplierinGroup(int GroupId, List<int> RemoveFromGroup, List<int> AddToGroup)
         {
-            //List<Supplier> removesuppliers = removefromgroup.Select(x =>
+            //List<Supplier> removesuppliers = RemoveFromGroup.Select(x =>
             //{
             //    Supplier s = _db.Suppliers.FirstOrDefault(s => s.Id == x);
             //    s.GroupId = null;
             //    return s;
             //}).ToList();
-            //List<Supplier> addsupplier = addtogroup.Select(x =>
+            //List<Supplier> addsupplier = AddToGroup.Select(x =>
             //{
             //    Supplier s = _db.Suppliers.FirstOrDefault(s => s.Id == x);
-            //    s.GroupId = groupid;
+            //    s.GroupId = GroupId;
             //    return s;
             //}).ToList();
             //List<Supplier> update = removesuppliers.Concat(addsupplier).ToList();
@@ -29,26 +31,39 @@ namespace BusinessAccess.Repository
             //_db.SaveChanges();
         }
 
-        public bool SelectGroupInCustomer(int groupid, bool isselect)
+
+        public CustomerGroupViewModel GetCustomerGroupModel(int customerId, int groupId)
         {
-            Group group = _db.Groups.FirstOrDefault(g => g.Id == groupid) ?? new Group();
-            if (group.Id != 0)
+            Group group = GetFirstOrDefault(x=>x.Id==groupId);
+            return new()
             {
-                group.Isselect = isselect;
-                _db.SaveChanges();
+                CustomerId = customerId,
+                GroupId = groupId,
+                GroupName = group != null ? group.Name : "",
+                Groups = new()
+            };
+        }
+
+        public async Task<bool> SelectGroupInCustomer(int GroupId, bool isselect)
+        {
+            Group Group = await _db.Groups.FirstOrDefaultAsync(g => g.Id == GroupId) ?? new Group();
+            if (Group.Id != 0)
+            {
+                Group.Isselect = isselect;
+                await _db.SaveChangesAsync();
                 return true;
             }
             else { return false; }
         }
 
-        public bool UnSelectAllGroupInCustomer(int customerid)
+        public async Task<bool> UnSelectAllGroupInCustomer(int customerId)
         {
-            List<Group> g = _db.Groups.Where(x=>x.CustomerId == customerid && !x.Isdelete).ToList();
+            List<Group> g = await _db.Groups.Where(x => x.CustomerId == customerId && !x.Isdelete).ToListAsync();
             g.ForEach(x =>
             {
                 x.Isselect = false;
             });
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
             return true;
         }
     }

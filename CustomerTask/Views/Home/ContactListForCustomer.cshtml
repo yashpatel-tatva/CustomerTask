@@ -1,14 +1,15 @@
-﻿@model List<Contact>
+﻿@using DataAccess.DataViewModel;
+@model List<ContactViewModel>
 
 @foreach (var c in Model)
 {
     <div class="d-flex justify-content-between">
-        <div onclick="getdataofcontact(@c.Id)">
+        <div onclick="getdataofContact(@c.Id)">
             @c.Name
         </div>
         <div class="d-flex gap-2">
-            <i class="fa-solid fa-pen editthiscontact" data-id="@c.Id" style="color : #920472!important"></i>
-            <i class="fa-solid fa-trash deletethiscontact text-danger" data-id="@c.Id"></i>
+            <i class="fa-solid fa-pen editthisContact" style="display : none ;color : #920472!important" data-id="@c.Id" ></i>
+            <i class="fa-solid fa-trash deletethisContact text-danger" style="display : none" data-id="@c.Id"></i>
         </div>
     </div>
 }

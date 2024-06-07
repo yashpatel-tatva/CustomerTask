@@ -4,8 +4,6 @@ using DataAccess.DataViewModel;
 using DataAccess.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using System.Diagnostics.Contracts;
-using System.Text.RegularExpressions;
 
 namespace CustomerTask.Controllers
 {
@@ -16,24 +14,24 @@ namespace CustomerTask.Controllers
         private readonly IGroupRepository _group;
 
 
-        public HomeController(ILogger<HomeController> logger, ICustomerRepository customerRepository, IGroupRepository group)
+        public HomeController(ILogger<HomeController> logger, ICustomerRepository customerRepository, IGroupRepository Group)
         {
             _logger = logger;
             _customer = customerRepository;
-            _group = group;
+            _group = Group;
         }
 
         public IActionResult Index(PageFilterRequestDTO<CustomerSearchFilterDTO> pageFilterDTO)
         {
-            ViewBag.Search = pageFilterDTO.search;
+            ViewBag.search = pageFilterDTO.Search;
             ViewBag.Currentpage = pageFilterDTO.currentpage;
             ViewBag.PageSize = pageFilterDTO.pagesize;
             return View();
         }
 
-        public IActionResult DetailOfCustomer(string acno)
+        public async Task<IActionResult> DetailOfCustomer(string acNo)
         {
-            return View("DetailOfCustomer", _customer.GetGroupCountandName(acno));
+            return View("DetailOfCustomer", await _customer.GetGroupCountandName(acNo));
         }
 
         public PageFilterResponseDTO<CustomerListViewModel> GetCustomerList(PageFilterRequestDTO<CustomerSearchFilterDTO> pageFilterDTO)
@@ -47,56 +45,25 @@ namespace CustomerTask.Controllers
             return PartialView("ListView", GetCustomerList(pageFilterDTO));
         }
 
-        public List<string> AccountNoDrop()
+        public Task<List<string>> AccountNoDrop()
         {
             return _customer.GetAllAcoountNumber();
         }
 
-        public Customer GetInfoOfAC(string acno)
+        public Task<Customer> GetInfoOfAC(string acNo)
         {
-            Customer model = _customer.GetInfoOfAC(acno) ??  new Customer();
-            return model;
+            return _customer.GetInfoOfAC(acNo);
         }
 
-        public IActionResult AddCustomer(CustomerDetailViewModel customer)
+        public IActionResult UpSertCustomer(CustomerDetailViewModel customer)
         {
-            //if(false)
-            //{
-            //    return BadRequest("Not Valid Form");
-            //}
-            Customer model = new Customer
-            {
-                Name = customer.Name,
-                Postcode = customer.Postcode,
-                Country = customer.Country,
-                Telephone = customer.Telephone,
-                Relation = customer.Relation,
-                Currency = customer.Currency,
-                Address1 = customer.Address1,
-                Address2 = customer.Address2,
-                Town = customer.Town,
-                County = customer.County,
-                Email = customer.Email,
-                Ac = customer.Ac,
-                Id = customer.Id,
-                Isdelete = false
-            };
-            List<string?> issuscribe = Request.Form["Issubscribe"].ToList();
-            if(issuscribe.Count == 0) model.Issubscribe = false;
+            Customer model = _customer.GetTableCustomer(customer);
+            List<string?> issuscribe = Request.Form["IssubscribeInvoice"].ToList();
+            if (issuscribe.Count == 0) model.Issubscribe = false;
             else if (issuscribe[0] == "Subscribed") model.Issubscribe = true;
             else model.Issubscribe = false;
-            //if (customer.Id == 0) _customer.Addthis(model);
-            //else _customer.Editthis(model);
-
-            _customer.Addthis(model);
-
+            _customer.UpSertCustomer(model);
             return Ok("");
-        }
-
-
-        public void DeleteCustomer(string acno)
-        {
-            _customer.DeleteCustomer(acno);
         }
 
         public void DeleteCustomerlist(List<int> ids)
@@ -104,142 +71,83 @@ namespace CustomerTask.Controllers
             _customer.DeleteCustomerlist(ids);
         }
 
-
-        public bool CheckACExist(int id, string acno)
+        public Task<bool> CheckACExist(int id, string acNo)
         {
-            return _customer.CheckACExist(id, acno);
+            return _customer.CheckACExist(id, acNo);
         }
 
-        public bool CheckCompanyNameExist(int id, string name)
+        public Task<bool> CheckCompanyNameExist(int id, string name)
         {
             return _customer.CheckCompanyNameExist(id, name);
         }
 
-
-        public IActionResult OpenDetailForm(int id)
+        public async Task<IActionResult> OpenDetailForm(int id)
         {
-            Customer customer = GetInfoOfId(id) ?? new Customer();
-            if (customer.Id == 0)
-            {
-                CustomerDetailViewModel customer1 = new();
-                return View("_DetailForm", customer1);
-            }
-            else
-            {
-                CustomerDetailViewModel model = new()
-                {
-                    Name = customer.Name,
-                    Postcode = customer.Postcode ?? "-",
-                    Country = customer.Country ?? "-",
-                    Telephone = customer.Telephone ?? "-",
-                    Relation = customer.Relation ?? "-",
-                    Currency = customer.Currency ?? "-",
-                    Address1 = customer.Address1 ?? "-",
-                    Address2 = customer.Address2 ?? "-",
-                    Town = customer.Town ?? "-",
-                    County = customer.County ?? "-",
-                    Email = customer.Email ?? "-",
-                    Issubscribe = customer.Issubscribe ,
-                    Ac = customer.Ac ?? "-",
-                    Id = customer.Id
-                };
-                return View("_DetailForm", model);
-            }
+            return View("_DetailForm", _customer.GetCustomerModel(await _customer.GetInfoOfId(id) ?? new Customer()));
         }
 
-        private Customer GetInfoOfId(int id)
+        public IActionResult OpenGroupModal(int id, bool isEdit)
         {
-            return _customer.GetInfoOfId(id) ?? new Customer();
+            return PartialView("EditGroupModal", new { customerId = id, isEdit });
         }
 
-
-        public IActionResult OpenGroupModal(int id , bool isedit)
+        public async Task<IActionResult> CustomerGroupData(int customerId, string search, bool isEdit)
         {
-
-            return PartialView("EditGroupModal", new { Customerid = id , IsEdit = isedit });
+            ViewBag.isEdit = isEdit;
+            return PartialView("GroupListForCustomer", await _customer.CustomerGroupDetail(customerId, search));
         }
 
-        public IActionResult CustomerGroupData(int customerid, string search , bool isedit)
+        public IActionResult AddGroupModal(int customerId, int groupId)
         {
-            ViewBag.isedit = isedit;
-            return PartialView("GroupListForCustomer", _customer.CustomerGroupDetail(customerid, search));
+            return PartialView("AddGroupModal", _group.GetCustomerGroupModel(customerId, groupId));
         }
 
-        public IActionResult AddGroupModal(int customerid, int groupid)
+        public async Task<bool> SelectGroupInCustomer(int groupId, bool isSelect)
         {
-            Group g = _group.GetFirstOrDefault(x => x.Id == groupid);
-            CustomerGroupViewModel customerGroup = new()
-            {
-                CustomerId = customerid,
-                GroupId = groupid,
-                GroupName = g != null ? g.Name : "",
-                Groups = new List<Group>()
-            };
-
-            return PartialView("AddGroupModal", customerGroup);
+            return await _group.SelectGroupInCustomer(groupId, isSelect);
+        }
+        public async Task<bool> UnSelectAllGroupInCustomer(int customerId)
+        {
+            return await _group.UnSelectAllGroupInCustomer(customerId);
         }
 
-        public bool SelectGroupInCustomer(int groupid, bool isselect)
+        public async Task<IActionResult> UpSertCustomerGroup(int customerId, int groupId, string group)
         {
-            return _group.SelectGroupInCustomer(groupid, isselect);
-        }
-        public bool UnSelectAllGroupInCustomer(int customerid)
-        {
-            return _group.UnSelectAllGroupInCustomer(customerid);
+            await _customer.UpSertCustomerGroup(customerId, groupId, group);
+            return RedirectToAction("OpenGroupModal", new { id = customerId, isEdit = true });
         }
 
-        public IActionResult AddGroupInCustomer(int customerid, int groupid, string group)
+        public async Task<bool> CustomerGroupExist(int customerId, int groupId, string group)
         {
-            _customer.AddGroupInCustomer(customerid, groupid, group);
-            return RedirectToAction("OpenGroupModal", new { id = customerid });
+            return await _customer.CustomerGroupExist(customerId, groupId, group);
         }
 
-
-        public IActionResult DeleteGroupFromCustomer(int customerid, int groupid)
+        public async Task<IActionResult> DeleteGroupCustomer(int customerId, int groupId)
         {
-            _customer.DeleteGroupFromCustomer(customerid, groupid);
-            return RedirectToAction("OpenGroupModal", new { id = customerid });
+            await _customer.DeleteGroupCustomer(customerId, groupId);
+            return RedirectToAction("OpenGroupModal", new { id = customerId, isEdit = true });
         }
 
-
-        public IActionResult GroupSupplierModel(int groupid, string search)
+        public async Task<int> UpSertCustomerContact(Contact contact)
         {
-            GroupAndSuppliersViewModel model = new GroupAndSuppliersViewModel
-            {
-                GroupId = groupid,
-                GroupName = _group.GetFirstOrDefault(x => x.Id == groupid).Name,
-                SupplierOfGroup = _customer.GetSupplierOfGroup(groupid, search),
-                NullSupplier = _customer.GetNullSupplier(search)
-            };
-            return PartialView("SupplierFromGroup", model);
+            return await _customer.UpSertCustomerContact(contact);
         }
 
-        public void EditSupplierinGroup(int groupid, List<int> removefromgroup, List<int> addtogroup)
+        public async Task<ContactViewModel> GetContactDataById(int contactId)
         {
-            _group.EditSupplierinGroup(groupid, removefromgroup, addtogroup);
+            return await _customer.GetContactDataById(contactId);
         }
 
-
-        public int AddThisContact(Contact contact)
+        public async Task<IActionResult> GetContactListCustomer(int customerId, string search)
         {
-            return _customer.AddThisContact(contact);
-        }
-
-        public Contact GetContactDataById(int contactid)
-        {
-            return _customer.GetContactDataById(contactid);
-        }
-
-        public IActionResult GetContactListOfCustomer(int CustomerId, string search)
-        {
-            List<Contact> model = _customer.GetContactListOfCustomer(CustomerId, search);
+            List<ContactViewModel> model = await _customer.GetContactListCustomer(customerId, search);
             return PartialView("ContactListForCustomer", model);
         }
-        public void DeletthisContact(int contactid)
-        {
-            _customer.DeletthisContact(contactid);
-        }
 
+        public async Task DeletthisContact(int contactId)
+        {
+            await _customer.DeletthisContact(contactId);
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
