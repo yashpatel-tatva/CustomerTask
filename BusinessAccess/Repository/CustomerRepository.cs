@@ -24,11 +24,11 @@ namespace BusinessAccess.Repository
             if (model.Id == 0) await _db.Customers.AddAsync(model);
             else _db.Customers.Update(model);
             if (model.Email != null)
-                _db.Contacts.Where(x => x.CustomerId == model.Id && !x.Isdelete && x.Email == model.Email).ToList().ForEach(x =>
+                await _db.Contacts.Where(x => x.CustomerId == model.Id && !x.Isdelete && x.Email == model.Email).ForEachAsync(x =>
                {
                    x.MailingList = model.Issubscribe ?? false ? "Subscribed" : "Unsubscribed";
                });
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
         }
 
         public async Task<bool> CheckACExist(int id, string acNo)
@@ -38,9 +38,9 @@ namespace BusinessAccess.Repository
 
         public async Task<bool> CheckCompanyNameExist(int id, string name)
         {
-            if (string.IsNullOrEmpty(name)) return false;
-            return await _db.Customers.AnyAsync(x => x.Name.Trim().ToLower() == name.Trim().ToLower() && x.Isdelete == false && x.Id != id);
+            return !string.IsNullOrEmpty(name) && await _db.Customers.AnyAsync(x => x.Name.Trim().ToLower() == name.Trim().ToLower() && x.Isdelete == false && x.Id != id);
         }
+
         public async Task DeleteCustomerlist(List<int> ids)
         {
             _db.Customers.Where(x => ids.Contains(x.Id) && (x.Isdelete == false)).ToList().ForEach(x => { x.Isdelete = true; });
@@ -63,7 +63,7 @@ namespace BusinessAccess.Repository
         public PageFilterResponseDTO<CustomerListViewModel> GetCustomerList(PageFilterRequestDTO<CustomerSearchFilterDTO> pageFilter)
         {
             PageFilterResponseDTO<CustomerListViewModel> customerresponse = _paginationRepository
-                .GetPagedData(GetCustomerViewList(_db.Customers.OrderBy(x => x.Ac).Where(x => x.Isdelete == false).ToList()), pageFilter);
+                .GetPagedData(GetCustomerViewList(_db.Customers.Where(x => x.Isdelete == false).OrderBy(x => x.Ac).ToList()), pageFilter);
             return customerresponse;
         }
 
@@ -95,6 +95,7 @@ namespace BusinessAccess.Repository
         {
             return await _db.Customers.FirstOrDefaultAsync(x => x.Id == id && x.Isdelete == false) ?? new Customer();
         }
+
         public async Task<List<GroupViewModel>> CustomerGroupDetail(int id, string search)
         {
             return await _db.Groups
@@ -120,7 +121,6 @@ namespace BusinessAccess.Repository
         {
             string name = groupName.Trim().ToLower();
             Group group;
-
             if (groupId != 0)
             {
                 group = await _db.Groups.FirstOrDefaultAsync(x => x.Id == groupId && !x.Isdelete) ?? new Group();
@@ -158,20 +158,16 @@ namespace BusinessAccess.Repository
 
         public async Task<List<Supplier>> GetSupplierOfGroup(int groupId, string search)
         {
-            if (search == null)
-                return await _db.Suppliers.Where(x => x.GroupId == groupId).OrderBy(x => x.Name).ToListAsync();
-            return await _db.Suppliers.Where(x => x.GroupId == groupId && x.Name.Trim().ToLower().Contains(search.Trim().ToLower()))
-                 .OrderBy(x => x.Name.Trim().ToLower().IndexOf(search.Trim().ToLower()) != -1 ? x.Name.Trim().ToLower().IndexOf(search.Trim().ToLower()) : int.MaxValue)
+            return await _db.Suppliers.Where(x => x.GroupId == groupId && (search == null || x.Name.Trim().ToLower().Contains(search.Trim().ToLower())))
+                .OrderBy(x => search == null ? x.Name : (x.Name.Trim().ToLower().IndexOf(search.Trim().ToLower()) != -1 ? x.Name.Trim().ToLower().IndexOf(search.Trim().ToLower()).ToString() : int.MaxValue.ToString()))
                 .ThenBy(x => x.Name)
                 .ToListAsync();
         }
 
         public async Task<List<Supplier>> GetNullSupplier(string search)
         {
-            if (search == null)
-                return await _db.Suppliers.Where(x => x.GroupId == null).OrderBy(x => x.Name).ToListAsync();
-            return await _db.Suppliers.Where(x => x.GroupId == null && x.Name.Trim().ToLower().Contains(search.Trim().ToLower()))
-                .OrderBy(x => x.Name.Trim().ToLower().IndexOf(search.Trim().ToLower()) != -1 ? x.Name.Trim().ToLower().IndexOf(search.Trim().ToLower()) : int.MaxValue)
+            return await _db.Suppliers.Where(x => x.GroupId == null && (search == null || x.Name.Trim().ToLower().Contains(search.Trim().ToLower())))
+                .OrderBy(x => search == null ? x.Name : (x.Name.Trim().ToLower().IndexOf(search.Trim().ToLower()) != -1 ? x.Name.Trim().ToLower().IndexOf(search.Trim().ToLower()).ToString() : int.MaxValue.ToString()))
                 .ThenBy(x => x.Name)
                 .ToListAsync();
         }

@@ -55,14 +55,14 @@ namespace CustomerTask.Controllers
             return _customer.GetInfoOfAC(acNo);
         }
 
-        public IActionResult UpSertCustomer(CustomerDetailViewModel customer)
+        public async Task<IActionResult> UpSertCustomer(CustomerDetailViewModel customer)
         {
             Customer model = _customer.GetTableCustomer(customer);
             List<string?> issuscribe = Request.Form["IssubscribeInvoice"].ToList();
             if (issuscribe.Count == 0) model.Issubscribe = false;
             else if (issuscribe[0] == "Subscribed") model.Issubscribe = true;
             else model.Issubscribe = false;
-            _customer.UpSertCustomer(model);
+            await _customer.UpSertCustomer(model);
             return Ok("");
         }
 
@@ -140,8 +140,7 @@ namespace CustomerTask.Controllers
 
         public async Task<IActionResult> GetContactListCustomer(int customerId, string search)
         {
-            List<ContactViewModel> model = await _customer.GetContactListCustomer(customerId, search);
-            return PartialView("ContactListForCustomer", model);
+            return PartialView("ContactListForCustomer", await _customer.GetContactListCustomer(customerId, search));
         }
 
         public async Task DeletthisContact(int contactId)

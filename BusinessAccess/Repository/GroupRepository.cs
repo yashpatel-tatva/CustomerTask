@@ -12,7 +12,7 @@ namespace BusinessAccess.Repository
         {
         }
 
-        public void EditSupplierinGroup(int GroupId, List<int> RemoveFromGroup, List<int> AddToGroup)
+        public void EditSupplierinGroup(int groupId, List<int> removeFromGroup, List<int> addToGroup)
         {
             //List<Supplier> removesuppliers = RemoveFromGroup.Select(x =>
             //{
@@ -44,12 +44,12 @@ namespace BusinessAccess.Repository
             };
         }
 
-        public async Task<bool> SelectGroupInCustomer(int GroupId, bool isselect)
+        public async Task<bool> SelectGroupInCustomer(int GroupId, bool isSelect)
         {
             Group Group = await _db.Groups.FirstOrDefaultAsync(g => g.Id == GroupId) ?? new Group();
             if (Group.Id != 0)
             {
-                Group.Isselect = isselect;
+                Group.Isselect = isSelect;
                 await _db.SaveChangesAsync();
                 return true;
             }

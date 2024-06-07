@@ -66,16 +66,19 @@ $('#addsubmit').on('click', function () {
                     timer: 1500
                 });
                 acNo = $('input[name="Ac"]').val();
-                if (id == 0) {
+                var isedit = $('#isEdit').val();
+                if (isedit == 'No') {
                     var link = document.createElement('a');
                     link.href = '/Home/DetailOfCustomer?acNo=' + acNo;
                     setTimeout(function () {
                         link.click();
                     }, 1000)
                 }
-                setinputfieldreadonly();
-                var contactid = $(document).find('.editthisContact').data('id');
-                getdataofContact(contactid) 
+                else {
+                    setinputfieldreadonly();
+                    var contactid = $(document).find('.editthisContact').data('id');
+                    getdataofContact(contactid)
+                }
             },
             error: function (error) {
                 Swal.fire("Form Is InValid")
