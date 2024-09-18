@@ -75,6 +75,8 @@ $('#addsubmit').on('click', function () {
                     }, 1000)
                 }
                 else {
+                    var stateObj = { acNo };
+                    history.pushState(stateObj, "", "/Home/DetailOfCustomer?acNo=" + acNo)
                     setinputfieldreadonly();
                     var contactid = $(document).find('.editthisContact').data('id');
                     getdataofContact(contactid)
@@ -165,9 +167,13 @@ function formvalid() {
         valid = false;
         $('span[name="Email"]').text("Invalid Email Address");
     } else { $('span[name="Email"]').text("") }
-    if (!/^[A-Z]{2}\d{5}$/.test(Ac)) {
+    //if (!/^[A-Z]{2}\d{5}$/.test(Ac)) {
+    //    valid = false;
+    //    $('span[name="Ac"]').text("Ac must start with two uppercase letters followed by five digits.");
+    //} else { $('span[name="Ac"]').text("") }
+    if (!/^(?=.*\S)[a-zA-Z0-9\s]*$/.test(Ac)) {
         valid = false;
-        $('span[name="Ac"]').text("Ac must start with two uppercase letters followed by five digits.");
+        $('span[name="Ac"]').text("Ac can only contain alphanumeric characters ");
     } else { $('span[name="Ac"]').text("") }
     return valid;
 }

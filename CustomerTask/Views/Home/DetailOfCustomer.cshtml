@@ -20,12 +20,15 @@
     td:nth-child(2n) {
         font-weight: 800;
     }
+
+    .col-xl-6{
+        width : 49.5% !important   }
 </style>
 <input type="hidden" id="isEdit" value="Yes" />
 
 @if (Model.CustomerId != 0)
 {
-    <div class="recorddiv d-flex gap-2">
+    <div class="recorddiv d-flex justify-content-between">
         <div class="col-xl-6 border-1" style="border :0.5px solid #6A7179">
             <div class="w-100 p-1 fw-bold" style="background-color: #F7F9FA ; font-size: 1.25rem"><i class="bi bi-building ps-3"></i> Invoice Address <i class="bi bi-pen-fill editthis "></i></div>
             <div class="">
@@ -35,7 +38,7 @@
                         <td>Code</td>
                         <td>
                             <input type="hidden" name="Id" value="@Model.CustomerId" />
-                            <input type="text" class="invoiceedit" name="Ac" value="@Model.Ac" readonly id="acdrop" />
+                            <input type="text" class="invoiceedit" oninput="this.value = this.value.toUpperCase()" name="Ac" value="@Model.Ac" readonly id="acdrop" />
                         </td>
                         <td><span name="Ac" class="text-danger h6 mb-0 editerror"></span></td>
                     </tr>

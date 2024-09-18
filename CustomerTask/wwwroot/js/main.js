@@ -23,6 +23,7 @@ $('.deletecustomer').on('click', function () {
                 showConfirmButton: false,
                 timer: 500
             });
+            return;
         }
     }
     else {

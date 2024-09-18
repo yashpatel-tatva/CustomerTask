@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DataAccess.DataModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace CustomerTask;
 
@@ -13,6 +14,7 @@ public partial class CustomerDbContext : DbContext
     {
     }
 
+    public virtual DbSet<LocalUser> LocalUsers { get; set; }
     public virtual DbSet<Contact> Contacts { get; set; }
 
     public virtual DbSet<Customer> Customers { get; set; }

@@ -35,7 +35,7 @@ public class CustomerDetailViewModel
 
     public bool? Issubscribe { get; set; }
 
-    [Required][RegularExpression(@"^[A-Z]{2}\d{5}$", ErrorMessage = "Ac must start with two uppercase letters followed by five digits.")] public string Ac { get; set; } = string.Empty;
+    /*[Required][RegularExpression(@"^[A-Z]{2}\d{5}$", ErrorMessage = "Ac must start with two uppercase letters followed by five digits.")]*/ public string Ac { get; set; } = string.Empty;
 
     public int Id { get; set; }
 }

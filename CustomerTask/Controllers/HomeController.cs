@@ -1,5 +1,6 @@
 ﻿using BusinessAccess.Repository.IRepository;
 using CustomerTask.Models;
+using CustomerTask.Services.IServices;
 using DataAccess.DataViewModel;
 using DataAccess.DTOs;
 using Microsoft.AspNetCore.Mvc;
@@ -12,13 +13,14 @@ namespace CustomerTask.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly ICustomerRepository _customer;
         private readonly IGroupRepository _group;
+        private readonly ICustomerService _customerService;
 
-
-        public HomeController(ILogger<HomeController> logger, ICustomerRepository customerRepository, IGroupRepository Group)
+        public HomeController(ILogger<HomeController> logger, ICustomerRepository customerRepository, IGroupRepository Group, ICustomerService customerService)
         {
             _logger = logger;
             _customer = customerRepository;
             _group = Group;
+            _customerService = customerService;
         }
 
         public IActionResult Index(PageFilterRequestDTO<CustomerSearchFilterDTO> pageFilterDTO)
@@ -55,6 +57,16 @@ namespace CustomerTask.Controllers
             return _customer.GetInfoOfAC(acNo);
         }
 
+        //public async Task UpSertCustomer(CustomerDetailViewModel customer)
+        //{
+        //    Customer model = _customer.GetTableCustomer(customer);
+        //    List<string?> issuscribe = Request.Form["IssubscribeInvoice"].ToList();
+        //    if (issuscribe.Count == 0) model.Issubscribe = false;
+        //    else if (issuscribe[0] == "Subscribed") model.Issubscribe = true;
+        //    else model.Issubscribe = false;
+        //    await _customer.UpSertCustomer(model);
+        //}
+
         public async Task<IActionResult> UpSertCustomer(CustomerDetailViewModel customer)
         {
             Customer model = _customer.GetTableCustomer(customer);
@@ -62,8 +74,9 @@ namespace CustomerTask.Controllers
             if (issuscribe.Count == 0) model.Issubscribe = false;
             else if (issuscribe[0] == "Subscribed") model.Issubscribe = true;
             else model.Issubscribe = false;
-            await _customer.UpSertCustomer(model);
-            return Ok("");
+            var response = await _customerService.CreateAsync<APIResponse>(model);
+            if (response != null && response.Success) return Ok(response.Result);
+            else return BadRequest();
         }
 
         public void DeleteCustomerlist(List<int> ids)

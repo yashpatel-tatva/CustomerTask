@@ -42,7 +42,7 @@ public partial class Customer
     [Column("issubscribe")]
     public bool? Issubscribe { get; set; }
 
-    [Column("isdelete")]
+    [Column("Isdelete")]
     public bool? Isdelete { get; set; }
 
     [Column("AC", TypeName = "character varying")]

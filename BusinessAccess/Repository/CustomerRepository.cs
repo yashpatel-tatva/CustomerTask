@@ -4,15 +4,21 @@ using DataAccess.DataViewModel;
 using DataAccess.DTOs;
 using DataAccess.Repository;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
+using System.Data;
+using System.Diagnostics.Metrics;
+using System.Linq.Expressions;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Group = CustomerTask.Group;
 
 namespace BusinessAccess.Repository
 {
     public class CustomerRepository : Repository<Customer>, ICustomerRepository
     {
-        private readonly IPaginationRepository<CustomerListViewModel, CustomerSearchFilterDTO> _paginationRepository;
-        public CustomerRepository(CustomerDbContext db, IPaginationRepository<CustomerListViewModel, CustomerSearchFilterDTO> paginationRepository) : base(db)
+        private readonly IPaginationRepository<Customer, CustomerSearchFilterDTO> _paginationRepository;
+        public CustomerRepository(CustomerDbContext db, IPaginationRepository<Customer, CustomerSearchFilterDTO> paginationRepository) : base(db)
         {
             _db = db;
             _paginationRepository = paginationRepository;
@@ -43,12 +49,25 @@ namespace BusinessAccess.Repository
 
         public async Task DeleteCustomerlist(List<int> ids)
         {
-            _db.Customers.Where(x => ids.Contains(x.Id) && (x.Isdelete == false)).ToList().ForEach(x => { x.Isdelete = true; });
-            _db.Contacts.Where(x => ids.Contains(x.CustomerId ?? 0) && (x.Isdelete == false)).ToList().ForEach(x => { x.Isdelete = true; });
-            _db.Groups.Where(x => ids.Contains(x.CustomerId ?? 0) && (x.Isdelete == false)).ToList().ForEach(x => { x.Isdelete = true; });
-            await _db.SaveChangesAsync();
+            var idsString = string.Join(",", ids);
+            using var command = new NpgsqlCommand("SELECT deletecustomerlist(@ids)", (NpgsqlConnection)_db.Database.GetDbConnection());
+            command.Parameters.AddWithValue("@ids", idsString);
+
+            await _db.Database.OpenConnectionAsync();
+            await command.ExecuteNonQueryAsync();
+            await _db.Database.CloseConnectionAsync();
         }
 
+
+
+
+
+
+
+        //_db.Customers.Where(x => ids.Contains(x.Id) && (x.Isdelete == false)).ToList().ForEach(x => { x.Isdelete = true; });
+        //_db.Contacts.Where(x => ids.Contains(x.CustomerId ?? 0) && (x.Isdelete == false)).ToList().ForEach(x => { x.Isdelete = true; });
+        //_db.Groups.Where(x => ids.Contains(x.CustomerId ?? 0) && (x.Isdelete == false)).ToList().ForEach(x => { x.Isdelete = true; });
+        //await _db.SaveChangesAsync();
         public async Task EditCustomer(Customer model)
         {
             _db.Customers.Update(model);
@@ -62,9 +81,127 @@ namespace BusinessAccess.Repository
 
         public PageFilterResponseDTO<CustomerListViewModel> GetCustomerList(PageFilterRequestDTO<CustomerSearchFilterDTO> pageFilter)
         {
-            PageFilterResponseDTO<CustomerListViewModel> customerresponse = _paginationRepository
-                .GetPagedData(GetCustomerViewList(_db.Customers.Where(x => x.Isdelete == false).OrderBy(x => x.Ac).ToList()), pageFilter);
-            return customerresponse;
+            //PageFilterResponseDTO<Customer> customerresponse = _paginationRepository.GetPagedDataTable(pageFilter);
+            PageFilterResponseDTO<Customer> customerresponse = GetPagedDataTable(pageFilter);
+            PageFilterResponseDTO<CustomerListViewModel> customerlist = new()
+            {
+                TotalColumn = customerresponse.TotalColumn,
+                CurrentPage = customerresponse.CurrentPage,
+                PageSize = customerresponse.PageSize,
+                TotalPage = customerresponse.TotalPage,
+                OrderColumnName = customerresponse.OrderColumnName,
+                OrderBy = customerresponse.OrderBy,
+                TotalRecords = customerresponse.TotalRecords,
+                Data = GetCustomerViewList(customerresponse.Data),
+            };
+            return customerlist;
+        }
+
+        private PageFilterResponseDTO<Customer> GetPagedDataTable(PageFilterRequestDTO<CustomerSearchFilterDTO> pageFilter)
+        {
+            var t = "AC0001".Where(char.IsDigit);
+            IQueryable<Customer> customers = _db.Customers.Where(x => !x.Isdelete ?? false).AsQueryable();
+            pageFilter.Search = pageFilter.Search.Trim().ToLower() ?? "";
+            if (pageFilter.Search != "")
+            {
+                customers = customers.Where(x => (x.Ac.ToLower().Contains(pageFilter.Search) ||
+                                            x.Name.ToLower().Contains(pageFilter.Search) ||
+                                            x.Postcode.ToLower().Contains(pageFilter.Search) ||
+                                            x.Country.ToLower().Contains(pageFilter.Search) ||
+                                            x.Telephone.ToLower().Contains(pageFilter.Search) ||
+                                            x.Relation.ToLower().Contains(pageFilter.Search) ||
+                                            x.Currency.ToLower().Contains(pageFilter.Search)
+                )).OrderBy(x => x.Ac.Trim().ToLower().IndexOf(pageFilter.Search) != -1 ? x.Ac.Trim().ToLower().IndexOf(pageFilter.Search) : int.MaxValue)
+                            .ThenBy(x => x.Name.Trim().ToLower().IndexOf(pageFilter.Search) != -1 ? x.Name.Trim().ToLower().IndexOf(pageFilter.Search) : int.MaxValue).ThenBy(x => x.Name)
+                            .ThenBy(x => x.Postcode.Trim().ToLower().IndexOf(pageFilter.Search) != -1 ? x.Postcode.Trim().ToLower().IndexOf(pageFilter.Search) : int.MaxValue).ThenBy(x => x.Postcode)
+                            .ThenBy(x => x.Country.Trim().ToLower().IndexOf(pageFilter.Search) != -1 ? x.Country.Trim().ToLower().IndexOf(pageFilter.Search) : int.MaxValue).ThenBy(x => x.Country)
+                            .ThenBy(x => x.Telephone.Trim().ToLower().IndexOf(pageFilter.Search) != -1 ? x.Telephone.Trim().ToLower().IndexOf(pageFilter.Search) : int.MaxValue).ThenBy(x => x.Telephone)
+                            .ThenBy(x => x.Relation.Trim().ToLower().IndexOf(pageFilter.Search) != -1 ? x.Relation.Trim().ToLower().IndexOf(pageFilter.Search) : int.MaxValue).ThenBy(x => x.Relation)
+                            .ThenBy(x => x.Currency.Trim().ToLower().IndexOf(pageFilter.Search) != -1 ? x.Currency.Trim().ToLower().IndexOf(pageFilter.Search) : int.MaxValue).ThenBy(x => x.Currency);
+            }
+            if (pageFilter.SearchByColumns != null)
+            {
+                customers = customers.Where(x => (pageFilter.SearchByColumns.Ac == "" || x.Ac.Trim().ToLower().Contains(pageFilter.SearchByColumns.Ac.Trim().ToLower())) &&
+                                            (pageFilter.SearchByColumns.Name == "" || x.Name.Trim().ToLower().Contains(pageFilter.SearchByColumns.Name.Trim().ToLower())) &&
+                                            (pageFilter.SearchByColumns.Postcode == "" || x.Postcode.Trim().ToLower().Contains(pageFilter.SearchByColumns.Postcode.Trim().ToLower())) &&
+                                            (pageFilter.SearchByColumns.Country == "" || x.Country.Trim().ToLower().Contains(pageFilter.SearchByColumns.Country.Trim().ToLower())) &&
+                                            (pageFilter.SearchByColumns.Telephone == "" || x.Telephone.Trim().ToLower().Contains(pageFilter.SearchByColumns.Telephone.Trim().ToLower())) &&
+                                            (pageFilter.SearchByColumns.Relation == "" || x.Relation.Trim().ToLower().Contains(pageFilter.SearchByColumns.Relation.Trim().ToLower())) &&
+                                            (pageFilter.SearchByColumns.Currency == "" || x.Currency.Trim().ToLower().Contains(pageFilter.SearchByColumns.Currency.Trim().ToLower()))
+                );
+                if (pageFilter.SearchByColumns.Currency != "")
+                    customers = customers.OrderBy(x => x.Currency.Trim().ToLower().IndexOf(pageFilter.SearchByColumns.Currency) != -1 ? x.Currency.Trim().ToLower().IndexOf(pageFilter.SearchByColumns.Currency) : int.MaxValue).ThenBy(x => x.Currency);
+                if (pageFilter.SearchByColumns.Relation != "")
+                    customers = customers.OrderBy(x => x.Relation.Trim().ToLower().IndexOf(pageFilter.SearchByColumns.Relation) != -1 ? x.Relation.Trim().ToLower().IndexOf(pageFilter.SearchByColumns.Relation) : int.MaxValue).ThenBy(x => x.Relation);
+                if (pageFilter.SearchByColumns.Telephone != "")
+                    customers = customers.OrderBy(x => x.Telephone.Trim().ToLower().IndexOf(pageFilter.SearchByColumns.Telephone) != -1 ? x.Telephone.Trim().ToLower().IndexOf(pageFilter.SearchByColumns.Telephone) : int.MaxValue).ThenBy(x => x.Telephone);
+                if (pageFilter.SearchByColumns.Country != "")
+                    customers = customers.OrderBy(x => x.Country.Trim().ToLower().IndexOf(pageFilter.SearchByColumns.Country) != -1 ? x.Country.Trim().ToLower().IndexOf(pageFilter.SearchByColumns.Country) : int.MaxValue).ThenBy(x => x.Country);
+                if (pageFilter.SearchByColumns.Postcode != "")
+                    customers = customers.OrderBy(x => x.Postcode.Trim().ToLower().IndexOf(pageFilter.SearchByColumns.Postcode) != -1 ? x.Postcode.Trim().ToLower().IndexOf(pageFilter.SearchByColumns.Postcode) : int.MaxValue).ThenBy(x => x.Postcode);
+                if (pageFilter.SearchByColumns.Name != "")
+                    customers = customers.OrderBy(x => x.Name.Trim().ToLower().IndexOf(pageFilter.SearchByColumns.Name) != -1 ? x.Name.Trim().ToLower().IndexOf(pageFilter.SearchByColumns.Name) : int.MaxValue).ThenBy(x => x.Name);
+                if (pageFilter.SearchByColumns.Ac != "")
+                    customers = customers.OrderBy(x => x.Ac.Trim().ToLower().IndexOf(pageFilter.SearchByColumns.Ac) != -1 ? x.Ac.Trim().ToLower().IndexOf(pageFilter.SearchByColumns.Ac) : int.MaxValue).ThenBy(x => x.Ac);
+            }
+
+
+            if (pageFilter.OrderByColumnName != null)
+            {
+                var param = Expression.Parameter(typeof(Customer), "x");
+                var sortExpression = Expression.Lambda<Func<Customer, object>>(
+                    Expression.Convert(
+                        Expression.Property(param, pageFilter.OrderByColumnName),
+                        typeof(object)),
+                    param);
+                var s = sortExpression.Body.ToString();
+                if (s == "Convert(x.Ac, Object)")
+                {
+                    customers = pageFilter.OrderBy ? customers.AsEnumerable().Select(x => new
+                    {
+                        Record = x,
+                        Alphanumeric = char.IsLetter(x.Ac.ElementAt(0)),
+                        HasLetters = (x.Ac.All(char.IsLetter)),
+                        HasNumbers = (x.Ac.All(char.IsDigit)),
+                        Letters = new string(x.Ac.Where(char.IsLetter).ToArray()),
+                        Numbers = int.TryParse(new string(x.Ac.Where(char.IsDigit).ToArray()), out int number) ? number : 0
+                    })
+                                                                        .OrderBy(x => x.HasNumbers ? 0 : x.HasLetters ? 1 : x.Alphanumeric ? 2 : 3)
+                                                                        .ThenBy(x => x.Numbers)
+                                                                        .ThenBy(x => x.Letters)
+                                                                        .Select(x => x.Record).AsQueryable()
+                                                    :
+                                                   customers.AsEnumerable().Select(x => new
+                                                   {
+                                                       Record = x,
+                                                       Alphanumeric = char.IsLetter(x.Ac.ElementAt(0)),
+                                                       HasLetters = (x.Ac.All(char.IsLetter)),
+                                                       HasNumbers = (x.Ac.All(char.IsDigit)),
+                                                       Letters = new string(x.Ac.Where(char.IsLetter).ToArray()),
+                                                       Numbers = int.TryParse(new string(x.Ac.Where(char.IsDigit).ToArray()), out int number) ? number : 0
+                                                   })
+                                                                        .OrderByDescending(x => x.HasNumbers ? 0 : x.HasLetters ? 1 : x.Alphanumeric ? 2 : 3)
+                                                                        .ThenByDescending(x => x.Numbers)
+                                                                        .ThenByDescending(x => x.Letters)
+                                                                        .Select(x => x.Record).AsQueryable();
+                }
+                else { customers = pageFilter.OrderBy ? customers.OrderBy(sortExpression) : customers.OrderByDescending(sortExpression); }
+            }
+
+            int totalRecords = customers.Count();
+            customers = customers.Skip((pageFilter.currentpage - 1) * pageFilter.pagesize).Take(pageFilter.pagesize);
+            var data = customers.ToList();
+            return new PageFilterResponseDTO<Customer>
+            {
+                Data = data,
+                TotalRecords = totalRecords,
+                TotalColumn = typeof(Customer).GetProperties().Count(),
+                CurrentPage = pageFilter.currentpage,
+                PageSize = pageFilter.pagesize,
+                TotalPage = (int)Math.Ceiling((decimal)totalRecords / pageFilter.pagesize),
+                OrderColumnName = pageFilter.OrderByColumnName,
+                OrderBy = pageFilter.OrderBy
+            };
         }
 
         public List<CustomerListViewModel> GetCustomerViewList(List<Customer> customers)
@@ -74,13 +211,13 @@ namespace BusinessAccess.Repository
                    CustomerListViewModel model = new()
                    {
                        Id = c.Id,
-                       AC = c.Ac,
+                       Ac = c.Ac,
                        Name = c.Name,
-                       PostCode = c.Postcode ?? string.Empty,
+                       Postcode = c.Postcode ?? string.Empty,
                        Country = c.Country ?? string.Empty,
                        Telephone = c.Telephone ?? string.Empty,
-                       Relationship = c.Relation ?? string.Empty,
-                       currency = c.Currency ?? string.Empty
+                       Relation = c.Relation ?? string.Empty,
+                       Currency = c.Currency ?? string.Empty
                    };
                    return model;
                }).ToList();
@@ -88,7 +225,8 @@ namespace BusinessAccess.Repository
 
         public async Task<Customer> GetInfoOfAC(string acNo)
         {
-            return await _db.Customers.FirstOrDefaultAsync(x => x.Ac == acNo && x.Isdelete == false) ?? new Customer();
+            var model = await _db.Customers.FirstOrDefaultAsync(x => x.Ac == acNo && x.Isdelete == false) ?? new Customer();
+            return model;
         }
 
         public async Task<Customer?> GetInfoOfId(int id)

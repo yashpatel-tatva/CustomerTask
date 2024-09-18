@@ -2,8 +2,6 @@
 {
     public class PageFilterRequestDTO<T>
     {
-        public string? search;
-
         public string? Search { get; set; } = null;
         public int currentpage { get; set; } = 1;
         public int pagesize { get; set; } = 10;

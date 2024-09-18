@@ -1,18 +1,18 @@
 ﻿var btncount = 0;
 var count = 0;
-var orderbycolumnname = "AC";
+var orderbycolumnname = "Ac";
 var orderby = true;
 var gotodrop = $('#gotodrop');
 
 
 var searchbycolumns = {
-    AC: "",
+    Ac: "",
     Name: "",
-    PostCode: "",
+    Postcode: "",
     Country: "",
     Telephone: "",
-    Relationship: "",
-    currency: ""
+    Relation: "",
+    Currency: ""
 }
 
 $('.nav-link').removeClass('active')
@@ -151,6 +151,7 @@ $(document).on('click', '.customerrow', function () {
 
 $('.notselect').on('click', function () {
     orderbycolumnname = $(this).data('name');
+    console.log(orderbycolumnname)
     var icon = $(this).find('i');
 
     $(this).find('i').removeClass('fa-sort')
@@ -190,21 +191,21 @@ $('.clearfilter').on('click', function () {
 })
 
 function searchbyfilter() {
-    var ac = $('input[name="AC"]').val();
+    var ac = $('input[name="Ac"]').val();
     var name = $('input[name="Name"]').val();
-    var postcode = $('input[name="PostCode"]').val();
+    var postcode = $('input[name="Postcode"]').val();
     var country = $('input[name="Country"]').val();
     var telephone = $('input[name="Telephone"]').val();
-    var relationship = $('input[name="Relationship"]').val();
-    var currency = $('input[name="currency"]').val();
+    var relationship = $('input[name="Relation"]').val();
+    var currency = $('input[name="Currency"]').val();
     searchbycolumns = {
-        AC: ac,
+        Ac: ac,
         Name: name,
-        PostCode: postcode,
+        Postcode: postcode,
         Country: country,
         Telephone: telephone,
-        Relationship: relationship,
-        currency: currency
+        Relation: relationship,
+        Currency: currency
     }
     orderbycolumnname = null;
     $('.notselect').find('i').removeClass('fa-sort-up fa-sort-down');
