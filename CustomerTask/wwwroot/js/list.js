@@ -252,9 +252,9 @@ function printbuttons(data) {
         else {
             $('.dataTables_paginate').append('<div class="paginate_button" data-id="' + 1 + '">' + 1 + '</div > ');
             $('.dataTables_paginate').append('<div class="paginate_buttonNaN" data-id="' + '...' + '">' + '...' + '</div > ');
-            $('.dataTables_paginate').append('<div class="paginate_button" data-id="' + (currentpage - 1) + '">' + (currentpage - 1) + '</div > ');
+            $('.dataTables_paginate').append('<div class="paginate_button" data-id="' + (parseInt(currentpage) - 1) + '">' + (parseInt(currentpage) - 1) + '</div > ');
             $('.dataTables_paginate').append('<div class="paginate_button" data-id="' + currentpage + '">' + currentpage + '</div > ');
-            $('.dataTables_paginate').append('<div class="paginate_button" data-id="' + (currentpage + 1) + '">' + (currentpage + 1) + '</div > ');
+            $('.dataTables_paginate').append('<div class="paginate_button" data-id="' + (parseInt(currentpage) + 1) + '">' + (parseInt(currentpage)+ 1) + '</div > ');
             $('.dataTables_paginate').append('<div class="paginate_buttonNaN" data-id="' + '...' + '">' + '...' + '</div > ');
             $('.dataTables_paginate').append('<div class="paginate_button" data-id="' + buttoncount + '">' + buttoncount + '</div > ');
         }
